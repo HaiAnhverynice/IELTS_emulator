@@ -6,15 +6,34 @@ import type { ListeningPart } from '../../types'
 type Mode = 'audio' | 'tts' | 'none'
 
 /** Prefer a British English voice, then any English, else the default. */
-function pickVoice(): SpeechSynthesisVoice | null {
-  if (!('speechSynthesis' in window)) return null
-  const voices = window.speechSynthesis.getVoices()
-  if (!voices.length) return null
+function pickVoice(voices: SpeechSynthesisVoice[]): SpeechSynthesisVoice | null {
   return (
     voices.find((v) => v.lang === 'en-GB') ??
     voices.find((v) => v.lang?.startsWith('en')) ??
     null
   )
+}
+
+/**
+ * Resolve the available voices. On a freshly-loaded origin Chrome returns an
+ * empty list until the async `voiceschanged` event fires; calling speak()
+ * before then silently drops the utterance. Wait for it (with a timeout so we
+ * never hang) so the first part is audible on a cold page load.
+ */
+function loadVoices(): Promise<SpeechSynthesisVoice[]> {
+  const synth = window.speechSynthesis
+  const ready = synth.getVoices()
+  if (ready.length) return Promise.resolve(ready)
+  return new Promise((resolve) => {
+    let done = false
+    const finish = () => {
+      if (done) return
+      done = true
+      resolve(synth.getVoices())
+    }
+    synth.addEventListener?.('voiceschanged', finish, { once: true })
+    setTimeout(finish, 1500)
+  })
 }
 
 /**
@@ -32,6 +51,7 @@ export default function AudioPlayer({ part, onEnded }: { part: ListeningPart; on
   const onEndedRef = useRef(onEnded)
   onEndedRef.current = onEnded
   const ttsActive = useRef(false) // guards the sentence queue against stale resumes
+  const startedRef = useRef(false) // true once an utterance actually begins speaking
 
   const hasTTS = !!part.transcript && 'speechSynthesis' in window
   const initialMode: Mode = part.audio ? 'audio' : hasTTS ? 'tts' : 'none'
@@ -58,40 +78,52 @@ export default function AudioPlayer({ part, onEnded }: { part: ListeningPart; on
     const text = part.transcript
     const chunks = text.match(/[^.!?]+[.!?]*\s*/g) ?? [text]
     const total = Math.max(1, text.length)
-    const voice = pickVoice()
     let i = 0
     let spoken = 0
     ttsActive.current = true
-
-    const speakNext = () => {
-      if (!ttsActive.current) return
-      if (i >= chunks.length) {
-        finish()
-        return
-      }
-      const chunk = chunks[i]
-      const u = new SpeechSynthesisUtterance(chunk)
-      u.volume = volume
-      u.rate = 0.95 // a touch under natural so it stays followable
-      u.lang = 'en-GB'
-      if (voice) u.voice = voice
-      u.onend = () => {
-        spoken += chunk.length
-        setProgress(Math.min(0.99, spoken / total))
-        i++
-        setTimeout(speakNext, 350) // brief pause between sentences
-      }
-      u.onerror = () => {
-        i++
-        setTimeout(speakNext, 0)
-      }
-      synth.speak(u)
-    }
+    startedRef.current = false
 
     setMode('tts')
     setNeedsGesture(false)
     setPlaying(true)
-    speakNext()
+
+    // Wait for voices before speaking (empty on a cold origin), then queue
+    // sentences one at a time so Chrome doesn't truncate a long utterance.
+    loadVoices().then((voices) => {
+      if (!ttsActive.current) return
+      const voice = pickVoice(voices)
+
+      const speakNext = () => {
+        if (!ttsActive.current) return
+        if (i >= chunks.length) {
+          finish()
+          return
+        }
+        const chunk = chunks[i]
+        const u = new SpeechSynthesisUtterance(chunk)
+        u.volume = volume
+        u.rate = 0.95 // a touch under natural so it stays followable
+        u.lang = 'en-GB'
+        if (voice) u.voice = voice
+        u.onstart = () => {
+          startedRef.current = true
+          setNeedsGesture(false)
+        }
+        u.onend = () => {
+          spoken += chunk.length
+          setProgress(Math.min(0.99, spoken / total))
+          i++
+          setTimeout(speakNext, 350) // brief pause between sentences
+        }
+        u.onerror = () => {
+          i++
+          setTimeout(speakNext, 0)
+        }
+        synth.speak(u)
+      }
+
+      speakNext()
+    })
   }
 
   const startAudio = () => {
@@ -119,10 +151,11 @@ export default function AudioPlayer({ part, onEnded }: { part: ListeningPart; on
       startAudio()
     } else if (initialMode === 'tts') {
       startTTS()
+      // If nothing actually started speaking (autoplay blocked, or voices
+      // never loaded), surface a Play button instead of leaving it silent.
       const t = setTimeout(() => {
-        const synth = window.speechSynthesis
-        if (!synth.speaking && !synth.pending) setNeedsGesture(true)
-      }, 500)
+        if (!startedRef.current) setNeedsGesture(true)
+      }, 2500)
       return () => {
         clearTimeout(t)
         ttsActive.current = false
