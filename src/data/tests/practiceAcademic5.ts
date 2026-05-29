@@ -2,6 +2,8 @@ import type { IeltsTest, Option } from '../../types'
 
 // Original practice test 5 (Academic). CC0. Not affiliated with Cambridge/IELTS.
 
+const map: Option[] = ['A', 'B', 'C', 'D', 'E', 'F'].map((v) => ({ value: v, label: '' }))
+
 const headings: Option[] = [
   { value: 'i', label: 'Defining the gig economy' },
   { value: 'ii', label: 'Flexibility for workers' },
@@ -21,11 +23,191 @@ const groups4: Option[] = [
   { value: 'D', label: 'economists' },
 ]
 
+const who: Option[] = [
+  { value: 'A', label: 'Ken' },
+  { value: 'B', label: 'Lucy' },
+  { value: 'C', label: 'both students' },
+]
+
 export const practiceAcademic5: IeltsTest = {
   id: 'practice-academic-5',
   title: 'Practice Test 5 — Academic',
   category: 'academic',
   source: 'Original CC0 material created for this simulator. Not affiliated with Cambridge/IELTS.',
+
+  listening: {
+    durationSec: 32 * 60,
+    answerKey: {
+      1: 'Delgado', 2: 'birthday', 3: ['20 July', '20th July'], 4: '45', 5: 'Garden', 6: '4', 7: '300', 8: '75', 9: 'chairs', 10: 'Friday',
+      11: 'B', 12: 'B', 13: 'B', 14: 'B', 15: 'C', 16: 'B', 17: 'D', 18: 'F', 19: 'C', 20: 'A',
+      21: 'A', 22: 'B', 23: 'C', 24: 'A', 25: 'A', 26: 'C', 27: 'A', 28: 'B', 29: 'A', 30: 'B',
+      31: 'algae', 32: 'calcium', 33: 'fish', 34: 'storms', 35: 'tourism', 36: 'warming', 37: 'bleaching', 38: 'pollution', 39: 'protected', 40: 'sustainable',
+    },
+    parts: [
+      {
+        number: 1,
+        heading: 'Questions 1–10',
+        context: 'A customer is hiring a venue for a party.',
+        transcript:
+          "Good morning, Meadow Hall venue hire. I'd like to book a room for a party. " +
+          "Of course. Your surname? Delgado — D, E, L, G, A, D, O. What's the occasion? A birthday party. " +
+          "And the date? The twentieth of July. How many guests? About forty-five. " +
+          "For that number I'd suggest the Garden room. How many hours do you need it? Four hours. " +
+          "The hire cost for four hours is three hundred pounds, with a deposit of seventy-five pounds. " +
+          "Does that include furniture? Yes, tables and chairs are included. " +
+          "When do I need to confirm? Please confirm by Friday.",
+        groups: [
+          {
+            id: 'l1', type: 'inline-gap', instructions: 'Complete the booking form below.',
+            wordLimit: 'Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.',
+            bodyHtml: `
+              <div style="border:1px solid var(--ielts-border);padding:1rem;max-width:30rem">
+                <div style="font-weight:700;margin-bottom:.5rem">VENUE HIRE — Booking</div>
+                <div style="display:grid;grid-template-columns:auto 1fr;gap:.5rem .75rem;align-items:center">
+                  <div>Surname:</div><div>{{1}}</div>
+                  <div>Occasion:</div><div>{{2}} party</div>
+                  <div>Date:</div><div>{{3}}</div>
+                  <div>Number of guests:</div><div>{{4}}</div>
+                  <div>Room:</div><div>{{5}} room</div>
+                  <div>Hours:</div><div>{{6}}</div>
+                  <div>Hire cost:</div><div>£{{7}}</div>
+                  <div>Deposit:</div><div>£{{8}}</div>
+                  <div>Included:</div><div>tables and {{9}}</div>
+                  <div>Confirm by:</div><div>{{10}}</div>
+                </div>
+              </div>`,
+            questions: Array.from({ length: 10 }, (_, i) => ({ number: i + 1 })),
+          },
+        ],
+      },
+      {
+        number: 2,
+        heading: 'Questions 11–20',
+        context: 'A warden describes Greenwood Nature Reserve.',
+        transcript:
+          "Welcome to Greenwood Nature Reserve. The reserve is especially famous for its birds — over a hundred species have been recorded here. " +
+          "There's no fixed entry fee, but we do ask for a donation. " +
+          "The best season for bird-watching is winter, when migrating birds gather on the lake. " +
+          "Please note that bicycles are not allowed anywhere on the reserve. " +
+          "We run a free guided walk every day at ten o'clock. " +
+          "Now for the map. As you enter at the bottom, the visitor centre is the building on your right. " +
+          "On the left, just past the pond, is the pond-dipping area for children. " +
+          "Up at the top, by the lake, is the bird hide. " +
+          "In the centre, beside the old oak, is the picnic area. And the toilets are in the bottom-left corner.",
+        groups: [
+          {
+            id: 'l2a', type: 'mcq-single', instructions: 'Choose the correct letter, A, B or C.',
+            questions: [
+              { number: 11, text: 'The reserve is especially famous for its', options: [{ value: 'A', label: 'deer.' }, { value: 'B', label: 'birds.' }, { value: 'C', label: 'butterflies.' }] },
+              { number: 12, text: 'For entry, visitors are asked to', options: [{ value: 'A', label: 'pay £4.' }, { value: 'B', label: 'give a donation.' }, { value: 'C', label: 'book online.' }] },
+              { number: 13, text: 'The best season for bird-watching is', options: [{ value: 'A', label: 'spring.' }, { value: 'B', label: 'winter.' }, { value: 'C', label: 'summer.' }] },
+              { number: 14, text: 'Bicycles are', options: [{ value: 'A', label: 'allowed on paths.' }, { value: 'B', label: 'not allowed at all.' }, { value: 'C', label: 'allowed everywhere.' }] },
+              { number: 15, text: 'A free guided walk runs', options: [{ value: 'A', label: 'on Saturdays.' }, { value: 'B', label: 'on Sundays.' }, { value: 'C', label: 'every day.' }] },
+            ],
+          },
+          {
+            id: 'l2b', type: 'map-labeling', instructions: 'Label the map below. Choose the correct letter, A–F.',
+            imageUrl: 'sample/park-map.svg', options: map,
+            questions: [
+              { number: 16, text: 'Visitor centre' },
+              { number: 17, text: 'Pond-dipping area' },
+              { number: 18, text: 'Bird hide' },
+              { number: 19, text: 'Picnic area' },
+              { number: 20, text: 'Toilets' },
+            ],
+          },
+        ],
+      },
+      {
+        number: 3,
+        heading: 'Questions 21–30',
+        context: 'Two students, Ken and Lucy, plan a marketing project.',
+        transcript:
+          "Ken: Let's plan our marketing project. I'll design the survey. " +
+          "Lucy: Good. I'll interview customers in the shopping centre. " +
+          "Ken: Who analyses the results? Lucy: Let's analyse them together. " +
+          "Ken: Agreed, we'll do the analysis together. And the poster? Ken: I'll make the poster. " +
+          "Lucy: Which products should we focus on? Ken: I think drinks and clothing. " +
+          "Lucy: Perfect — drinks and clothing. Who's our target group? Ken: Teenagers, I think. " +
+          "Lucy: How big a sample? Ken: Let's aim for one hundred people. " +
+          "Lucy: And the method — online or face to face? Ken: An online survey will be quickest. " +
+          "Lucy: Finally, how do we present the results? Ken: As graphs, I think, they're clearest.",
+        groups: [
+          {
+            id: 'l3a', type: 'matching', instructions: 'Who will do each task? Choose from the list.',
+            options: who,
+            questions: [
+              { number: 21, text: 'Design the survey' },
+              { number: 22, text: 'Interview customers' },
+              { number: 23, text: 'Analyse the results' },
+              { number: 24, text: 'Make the poster' },
+            ],
+          },
+          {
+            id: 'l3b', type: 'mcq-multi', instructions: 'Which TWO products will they study? Choose TWO letters, A–E.',
+            options: [
+              { value: 'A', label: 'drinks' },
+              { value: 'B', label: 'snacks' },
+              { value: 'C', label: 'clothing' },
+              { value: 'D', label: 'phones' },
+              { value: 'E', label: 'shoes' },
+            ],
+            questions: [{ number: 25 }, { number: 26 }],
+          },
+          {
+            id: 'l3c', type: 'mcq-single', instructions: 'Choose the correct letter, A, B or C.',
+            questions: [
+              { number: 27, text: 'Their target group is', options: [{ value: 'A', label: 'teenagers.' }, { value: 'B', label: 'families.' }, { value: 'C', label: 'retired people.' }] },
+              { number: 28, text: 'They aim for a sample of', options: [{ value: 'A', label: '50 people.' }, { value: 'B', label: '100 people.' }, { value: 'C', label: '200 people.' }] },
+              { number: 29, text: 'They will use', options: [{ value: 'A', label: 'an online survey.' }, { value: 'B', label: 'phone calls.' }, { value: 'C', label: 'face-to-face interviews only.' }] },
+              { number: 30, text: 'They will present the results as', options: [{ value: 'A', label: 'a report.' }, { value: 'B', label: 'graphs.' }, { value: 'C', label: 'a video.' }] },
+            ],
+          },
+        ],
+      },
+      {
+        number: 4,
+        heading: 'Questions 31–40',
+        context: 'Listen to part of a lecture about coral reefs.',
+        transcript:
+          "Coral reefs are among the richest ecosystems on Earth. Each coral is a tiny animal that lives together with microscopic algae, which provide it with food through photosynthesis. " +
+          "Corals build hard skeletons out of calcium, and over thousands of years these skeletons grow into vast reefs. " +
+          "Reefs are vital. They are home to a quarter of all ocean fish. They protect coastlines by absorbing the force of storms. And for many countries they bring in valuable income from tourism. " +
+          "Sadly, reefs are under threat. The biggest danger is ocean warming. When the water gets too warm, the coral expels its algae and turns white — a process called bleaching. " +
+          "Pollution from the land makes things worse. " +
+          "To save reefs, governments are creating marine protected areas, and encouraging more sustainable fishing.",
+        groups: [
+          {
+            id: 'l4', type: 'inline-gap', instructions: 'Complete the notes below.',
+            wordLimit: 'Write ONE WORD ONLY for each answer.',
+            bodyHtml: `
+              <div style="font-weight:700;margin-bottom:.4rem">Coral Reefs</div>
+              <div style="font-weight:700;margin-top:.6rem">What they are</div>
+              <ul style="margin:.2rem 0 .2rem 1.1rem;list-style:disc">
+                <li>each coral lives with tiny {{31}}</li>
+                <li>corals build skeletons from {{32}}</li>
+              </ul>
+              <div style="font-weight:700;margin-top:.6rem">Why they matter</div>
+              <ul style="margin:.2rem 0 .2rem 1.1rem;list-style:disc">
+                <li>home to many {{33}}</li>
+                <li>protect the coast from {{34}}</li>
+                <li>bring income from {{35}}</li>
+              </ul>
+              <div style="font-weight:700;margin-top:.6rem">Threats &amp; solutions</div>
+              <ul style="margin:.2rem 0 .2rem 1.1rem;list-style:disc">
+                <li>main threat is ocean {{36}}</li>
+                <li>warm water causes {{37}}</li>
+                <li>{{38}} from land makes it worse</li>
+                <li>create marine {{39}} areas</li>
+                <li>encourage {{40}} fishing</li>
+              </ul>`,
+            questions: Array.from({ length: 10 }, (_, i) => ({ number: i + 31 })),
+          },
+        ],
+      },
+    ],
+  },
+
   reading: {
     durationSec: 60 * 60,
     answerKey: {

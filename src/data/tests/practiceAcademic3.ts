@@ -2,6 +2,8 @@ import type { IeltsTest, Option } from '../../types'
 
 // Original practice test 3 (Academic). CC0. Not affiliated with Cambridge/IELTS.
 
+const map: Option[] = ['A', 'B', 'C', 'D', 'E', 'F'].map((v) => ({ value: v, label: '' }))
+
 const headings: Option[] = [
   { value: 'i', label: 'Growing regions and varieties' },
   { value: 'ii', label: 'A legendary discovery' },
@@ -21,11 +23,191 @@ const places: Option[] = [
   { value: 'D', label: 'the tropics' },
 ]
 
+const who: Option[] = [
+  { value: 'A', label: 'Sam' },
+  { value: 'B', label: 'Ria' },
+  { value: 'C', label: 'both students' },
+]
+
 export const practiceAcademic3: IeltsTest = {
   id: 'practice-academic-3',
   title: 'Practice Test 3 — Academic',
   category: 'academic',
   source: 'Original CC0 material created for this simulator. Not affiliated with Cambridge/IELTS.',
+
+  listening: {
+    durationSec: 32 * 60,
+    answerKey: {
+      1: 'Patterson', 2: 'Italian', 3: 'Thursday', 4: '6.30', 5: '8', 6: '120', 7: 'apron', 8: '4', 9: 'Bianchi', 10: 'Friday',
+      11: 'A', 12: 'B', 13: 'A', 14: 'B', 15: 'B', 16: 'B', 17: 'C', 18: 'F', 19: 'D', 20: 'A',
+      21: 'A', 22: 'B', 23: 'C', 24: 'B', 25: 'B', 26: 'D', 27: 'C', 28: 'A', 29: 'B', 30: 'B',
+      31: 'oil', 32: 'lightweight', 33: 'packaging', 34: 'oceans', 35: 'animals', 36: 'microplastics', 37: 'sorted', 38: 'melted', 39: 'quality', 40: 'reduce',
+    },
+    parts: [
+      {
+        number: 1,
+        heading: 'Questions 1–10',
+        context: 'A caller is enrolling in an evening cookery course.',
+        transcript:
+          "Hello, Adult Learning Centre. How can I help? Hi, I'd like to enrol in an evening cookery course. " +
+          "Of course. Could I take your surname? It's Patterson — P, A, T, T, E, R, S, O, N. " +
+          "And which course would you like? The Italian cookery one, please. " +
+          "That course runs on Thursdays. What time does it start? At half past six — six thirty. " +
+          "How long does it last? It's an eight-week course. And how much does it cost? One hundred and twenty pounds. " +
+          "Do I need to bring anything? Just an apron. Which room is it in? Room four. " +
+          "And who teaches it? Chef Bianchi. When should I register by? Please register by Friday this week.",
+        groups: [
+          {
+            id: 'l1', type: 'inline-gap', instructions: 'Complete the form below.',
+            wordLimit: 'Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.',
+            bodyHtml: `
+              <div style="border:1px solid var(--ielts-border);padding:1rem;max-width:30rem">
+                <div style="font-weight:700;margin-bottom:.5rem">EVENING COURSE — Enrolment</div>
+                <div style="display:grid;grid-template-columns:auto 1fr;gap:.5rem .75rem;align-items:center">
+                  <div>Surname:</div><div>{{1}}</div>
+                  <div>Course:</div><div>{{2}} cookery</div>
+                  <div>Day:</div><div>{{3}}</div>
+                  <div>Start time:</div><div>{{4}} pm</div>
+                  <div>Length:</div><div>{{5}} weeks</div>
+                  <div>Cost:</div><div>£{{6}}</div>
+                  <div>Bring:</div><div>an {{7}}</div>
+                  <div>Room:</div><div>{{8}}</div>
+                  <div>Tutor:</div><div>Chef {{9}}</div>
+                  <div>Register by:</div><div>{{10}}</div>
+                </div>
+              </div>`,
+            questions: Array.from({ length: 10 }, (_, i) => ({ number: i + 1 })),
+          },
+        ],
+      },
+      {
+        number: 2,
+        heading: 'Questions 11–20',
+        context: 'A guide describes Riverside Gardens.',
+        transcript:
+          "Welcome to Riverside Gardens. The gardens are at their best in spring, when the flowers bloom, so spring is the ideal time to visit. " +
+          "Entry costs three pounds for adults. Our café is well known for its delicious cakes. " +
+          "Dogs are welcome but must be kept on a lead. New this year is an exciting hedge maze near the river. " +
+          "Let me help you find your way using the map. As you enter through the main gate at the bottom, the information desk is the building immediately on your right. " +
+          "In the very centre of the gardens, beside the old oak, is our famous rose garden. " +
+          "Up in the top corner, overlooking the lake, is the bird hide. " +
+          "On your left, just past the pond, you'll find the children's play area. " +
+          "And the tea room is in the bottom-left corner near the wall.",
+        groups: [
+          {
+            id: 'l2a', type: 'mcq-single', instructions: 'Choose the correct letter, A, B or C.',
+            questions: [
+              { number: 11, text: 'The best time to visit is', options: [{ value: 'A', label: 'spring.' }, { value: 'B', label: 'summer.' }, { value: 'C', label: 'autumn.' }] },
+              { number: 12, text: 'Adult entry costs', options: [{ value: 'A', label: 'nothing.' }, { value: 'B', label: '£3.' }, { value: 'C', label: '£5.' }] },
+              { number: 13, text: 'The café is known for its', options: [{ value: 'A', label: 'cakes.' }, { value: 'B', label: 'soups.' }, { value: 'C', label: 'ice cream.' }] },
+              { number: 14, text: 'Dogs must be', options: [{ value: 'A', label: 'left outside.' }, { value: 'B', label: 'kept on a lead.' }, { value: 'C', label: 'carried.' }] },
+              { number: 15, text: 'New this year is', options: [{ value: 'A', label: 'a glasshouse.' }, { value: 'B', label: 'a hedge maze.' }, { value: 'C', label: 'a fountain.' }] },
+            ],
+          },
+          {
+            id: 'l2b', type: 'map-labeling', instructions: 'Label the map below. Choose the correct letter, A–F.',
+            imageUrl: 'sample/park-map.svg', options: map,
+            questions: [
+              { number: 16, text: 'Information desk' },
+              { number: 17, text: 'Rose garden' },
+              { number: 18, text: 'Bird hide' },
+              { number: 19, text: "Children's play area" },
+              { number: 20, text: 'Tea room' },
+            ],
+          },
+        ],
+      },
+      {
+        number: 3,
+        heading: 'Questions 21–30',
+        context: 'Two students, Sam and Ria, plan a biology field trip.',
+        transcript:
+          "Sam: Let's sort out our biology field trip. I'll bring the nets for catching insects. " +
+          "Ria: Great. I'll bring the notebooks for recording what we find. " +
+          "Sam: Good. What about a first-aid kit? Ria: Let's both bring one, just to be safe. " +
+          "Sam: Agreed, we'll both bring a first-aid kit. And the camera? Ria: I'll bring my camera as well. " +
+          "Sam: Now, which habitats should we study? Ria: I think the woodland and the river are the most interesting. " +
+          "Sam: Perfect — woodland and river it is. The trip is on Saturday, isn't it? Ria: Yes, Saturday. " +
+          "Sam: Where do we meet? Ria: At the school, then we travel together. " +
+          "Sam: And the main aim is to count the different species, right? Ria: Yes, to count species. " +
+          "Sam: When's the report due? Ria: In two weeks.",
+        groups: [
+          {
+            id: 'l3a', type: 'matching', instructions: 'Who will bring each item? Choose from the list.',
+            options: who,
+            questions: [
+              { number: 21, text: 'Nets' },
+              { number: 22, text: 'Notebooks' },
+              { number: 23, text: 'First-aid kit' },
+              { number: 24, text: 'Camera' },
+            ],
+          },
+          {
+            id: 'l3b', type: 'mcq-multi', instructions: 'Which TWO habitats will they study? Choose TWO letters, A–E.',
+            options: [
+              { value: 'A', label: 'pond' },
+              { value: 'B', label: 'woodland' },
+              { value: 'C', label: 'meadow' },
+              { value: 'D', label: 'river' },
+              { value: 'E', label: 'hedgerow' },
+            ],
+            questions: [{ number: 25 }, { number: 26 }],
+          },
+          {
+            id: 'l3c', type: 'mcq-single', instructions: 'Choose the correct letter, A, B or C.',
+            questions: [
+              { number: 27, text: 'The trip will take place on', options: [{ value: 'A', label: 'Monday.' }, { value: 'B', label: 'Wednesday.' }, { value: 'C', label: 'Saturday.' }] },
+              { number: 28, text: 'They will meet at', options: [{ value: 'A', label: 'the school.' }, { value: 'B', label: 'the station.' }, { value: 'C', label: 'the car park.' }] },
+              { number: 29, text: 'The main aim is to', options: [{ value: 'A', label: 'collect samples.' }, { value: 'B', label: 'count species.' }, { value: 'C', label: 'map the area.' }] },
+              { number: 30, text: 'The report is due in', options: [{ value: 'A', label: 'one week.' }, { value: 'B', label: 'two weeks.' }, { value: 'C', label: 'a month.' }] },
+            ],
+          },
+        ],
+      },
+      {
+        number: 4,
+        heading: 'Questions 31–40',
+        context: 'Listen to part of a lecture about plastics and recycling.',
+        transcript:
+          "Today we'll look at plastics and recycling. Most plastics are made from oil, a fossil fuel. " +
+          "They became hugely popular because they are cheap and lightweight. Their single biggest use is in packaging. " +
+          "But plastics cause serious problems. A great deal of plastic waste ends up in the oceans. " +
+          "There it harms marine animals, which swallow it or become tangled in it. Over time it breaks down into tiny fragments called microplastics. " +
+          "How is plastic recycled? First the collected plastic is sorted by type. Then it is cleaned and melted down to be re-formed. " +
+          "Unfortunately, recycled plastic is often of lower quality than new plastic. " +
+          "That is why experts say the best solution is not to recycle more, but simply to reduce how much plastic we use in the first place.",
+        groups: [
+          {
+            id: 'l4', type: 'inline-gap', instructions: 'Complete the notes below.',
+            wordLimit: 'Write ONE WORD ONLY for each answer.',
+            bodyHtml: `
+              <div style="font-weight:700;margin-bottom:.4rem">Plastics and Recycling</div>
+              <div style="font-weight:700;margin-top:.6rem">Background</div>
+              <ul style="margin:.2rem 0 .2rem 1.1rem;list-style:disc">
+                <li>most plastics are made from {{31}}</li>
+                <li>popular because cheap and {{32}}</li>
+                <li>biggest use is in {{33}}</li>
+              </ul>
+              <div style="font-weight:700;margin-top:.6rem">Problems</div>
+              <ul style="margin:.2rem 0 .2rem 1.1rem;list-style:disc">
+                <li>waste reaches the {{34}}</li>
+                <li>harms marine {{35}}</li>
+                <li>breaks into tiny {{36}}</li>
+              </ul>
+              <div style="font-weight:700;margin-top:.6rem">Recycling &amp; solution</div>
+              <ul style="margin:.2rem 0 .2rem 1.1rem;list-style:disc">
+                <li>plastic is collected and {{37}}</li>
+                <li>then cleaned and {{38}}</li>
+                <li>recycled plastic is lower {{39}}</li>
+                <li>best to {{40}} how much we use</li>
+              </ul>`,
+            questions: Array.from({ length: 10 }, (_, i) => ({ number: i + 31 })),
+          },
+        ],
+      },
+    ],
+  },
+
   reading: {
     durationSec: 60 * 60,
     answerKey: {

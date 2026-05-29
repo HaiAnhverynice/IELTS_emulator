@@ -2,6 +2,8 @@ import type { IeltsTest, Option } from '../../types'
 
 // Original practice test 4 (Academic). CC0. Not affiliated with Cambridge/IELTS.
 
+const map: Option[] = ['A', 'B', 'C', 'D', 'E', 'F'].map((v) => ({ value: v, label: '' }))
+
 const headings: Option[] = [
   { value: 'i', label: 'Health and safety benefits' },
   { value: 'ii', label: 'A simple idea with a long history' },
@@ -21,11 +23,194 @@ const cities: Option[] = [
   { value: 'D', label: 'Tokyo' },
 ]
 
+const who: Option[] = [
+  { value: 'A', label: 'Leo' },
+  { value: 'B', label: 'Mia' },
+  { value: 'C', label: 'both students' },
+]
+
 export const practiceAcademic4: IeltsTest = {
   id: 'practice-academic-4',
   title: 'Practice Test 4 — Academic',
   category: 'academic',
   source: 'Original CC0 material created for this simulator. Not affiliated with Cambridge/IELTS.',
+
+  listening: {
+    durationSec: 32 * 60,
+    answerKey: {
+      1: 'Okonkwo', 2: ['5 May', '5th May'], 3: 'Oak', 4: 'BS1 2AB', 5: 'adult', 6: '12', 7: '3', 8: '20', 9: 'passport', 10: 'Thursday',
+      11: 'B', 12: 'A', 13: 'B', 14: 'B', 15: 'A', 16: 'B', 17: 'C', 18: 'F', 19: 'D', 20: 'A',
+      21: 'A', 22: 'B', 23: 'C', 24: 'A', 25: 'A', 26: 'C', 27: 'B', 28: 'C', 29: 'A', 30: 'B',
+      31: 'plates', 32: 'magma', 33: 'pressure', 34: 'ash', 35: 'lava', 36: 'gases', 37: 'fertile', 38: 'monitor', 39: 'earthquakes', 40: 'evacuate',
+    },
+    parts: [
+      {
+        number: 1,
+        heading: 'Questions 1–10',
+        context: 'A person is registering for a library card.',
+        transcript:
+          "Good morning, Central Library. I'd like to register for a library card. " +
+          "Certainly. Your surname, please? Okonkwo — O, K, O, N, K, W, O. " +
+          "And your date of birth? The fifth of May. What's your address? It's twelve Oak Street. " +
+          "And the postcode? B S one, two A B. " +
+          "We offer adult and child cards — which do you need? An adult card, please. " +
+          "With an adult card you may borrow up to twelve items at a time, for a loan period of three weeks. " +
+          "Is there a fine for late returns? Yes, twenty pence per day per item. " +
+          "Do you need to see any identification? Yes, a passport will do. " +
+          "And finally, we stay open late on Thursdays, until nine.",
+        groups: [
+          {
+            id: 'l1', type: 'inline-gap', instructions: 'Complete the form below.',
+            wordLimit: 'Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.',
+            bodyHtml: `
+              <div style="border:1px solid var(--ielts-border);padding:1rem;max-width:30rem">
+                <div style="font-weight:700;margin-bottom:.5rem">LIBRARY CARD — Registration</div>
+                <div style="display:grid;grid-template-columns:auto 1fr;gap:.5rem .75rem;align-items:center">
+                  <div>Surname:</div><div>{{1}}</div>
+                  <div>Date of birth:</div><div>{{2}}</div>
+                  <div>Address:</div><div>12 {{3}} Street</div>
+                  <div>Postcode:</div><div>{{4}}</div>
+                  <div>Card type:</div><div>{{5}}</div>
+                  <div>Max items:</div><div>{{6}}</div>
+                  <div>Loan period:</div><div>{{7}} weeks</div>
+                  <div>Fine per day:</div><div>{{8}}p</div>
+                  <div>ID shown:</div><div>{{9}}</div>
+                  <div>Late opening on:</div><div>{{10}}</div>
+                </div>
+              </div>`,
+            questions: Array.from({ length: 10 }, (_, i) => ({ number: i + 1 })),
+          },
+        ],
+      },
+      {
+        number: 2,
+        heading: 'Questions 11–20',
+        context: 'A guide gives a tour of Hilltop Heritage Park.',
+        transcript:
+          "Welcome to Hilltop Heritage Park. The great house here was built in the nineteenth century by a wealthy wool merchant. " +
+          "Admission is eight pounds for adults. Guided tours run twice a day, at eleven and at two. " +
+          "Photography is not permitted inside the house, though you may take photos in the grounds. " +
+          "Please note the park is closed on Mondays. " +
+          "Now, using the map: as you come in through the main gate at the bottom, the ticket office is immediately on your right. " +
+          "In the centre of the grounds, by the old oak, stands the main house itself. " +
+          "Right at the top, overlooking the lake, is the viewpoint. " +
+          "On the left, just beyond the pond, is the walled garden. " +
+          "And the gift shop is in the bottom-left corner.",
+        groups: [
+          {
+            id: 'l2a', type: 'mcq-single', instructions: 'Choose the correct letter, A, B or C.',
+            questions: [
+              { number: 11, text: 'The house was built in the', options: [{ value: 'A', label: '18th century.' }, { value: 'B', label: '19th century.' }, { value: 'C', label: '20th century.' }] },
+              { number: 12, text: 'Adult admission costs', options: [{ value: 'A', label: '£8.' }, { value: 'B', label: '£10.' }, { value: 'C', label: '£12.' }] },
+              { number: 13, text: 'Guided tours run', options: [{ value: 'A', label: 'every hour.' }, { value: 'B', label: 'twice a day.' }, { value: 'C', label: 'on request.' }] },
+              { number: 14, text: 'Photography is', options: [{ value: 'A', label: 'allowed everywhere.' }, { value: 'B', label: 'not allowed inside the house.' }, { value: 'C', label: 'banned completely.' }] },
+              { number: 15, text: 'The park is closed on', options: [{ value: 'A', label: 'Mondays.' }, { value: 'B', label: 'Tuesdays.' }, { value: 'C', label: 'no days.' }] },
+            ],
+          },
+          {
+            id: 'l2b', type: 'map-labeling', instructions: 'Label the map below. Choose the correct letter, A–F.',
+            imageUrl: 'sample/park-map.svg', options: map,
+            questions: [
+              { number: 16, text: 'Ticket office' },
+              { number: 17, text: 'Main house' },
+              { number: 18, text: 'Viewpoint' },
+              { number: 19, text: 'Walled garden' },
+              { number: 20, text: 'Gift shop' },
+            ],
+          },
+        ],
+      },
+      {
+        number: 3,
+        heading: 'Questions 21–30',
+        context: 'Two students, Leo and Mia, plan a history essay.',
+        transcript:
+          "Leo: Let's divide up the work for our history essay. I'll find the primary sources online. " +
+          "Mia: Good. I'll visit the archive in town to look at the original documents. " +
+          "Leo: Who writes the outline? Mia: Let's do the outline together. " +
+          "Leo: Agreed, we'll write the outline together. And checking the references? Leo: I'll check the references at the end. " +
+          "Mia: So which aspects shall we cover? Leo: I think the causes and the timeline of events. " +
+          "Mia: Perfect — causes and timeline. How long does it need to be? Leo: Two thousand words. " +
+          "Mia: And the deadline? Leo: It's due in two weeks. " +
+          "Mia: What should we focus on? Leo: Just one event, in real depth, rather than the whole period. " +
+          "Mia: And it's a written essay, not a presentation? Leo: Yes, a formal essay.",
+        groups: [
+          {
+            id: 'l3a', type: 'matching', instructions: 'Who will do each task? Choose from the list.',
+            options: who,
+            questions: [
+              { number: 21, text: 'Find primary sources' },
+              { number: 22, text: 'Visit the archive' },
+              { number: 23, text: 'Write the outline' },
+              { number: 24, text: 'Check the references' },
+            ],
+          },
+          {
+            id: 'l3b', type: 'mcq-multi', instructions: 'Which TWO aspects will they cover? Choose TWO letters, A–E.',
+            options: [
+              { value: 'A', label: 'the causes' },
+              { value: 'B', label: 'key figures' },
+              { value: 'C', label: 'the timeline' },
+              { value: 'D', label: 'the economy' },
+              { value: 'E', label: 'the art' },
+            ],
+            questions: [{ number: 25 }, { number: 26 }],
+          },
+          {
+            id: 'l3c', type: 'mcq-single', instructions: 'Choose the correct letter, A, B or C.',
+            questions: [
+              { number: 27, text: 'The essay should be', options: [{ value: 'A', label: '1,500 words.' }, { value: 'B', label: '2,000 words.' }, { value: 'C', label: '2,500 words.' }] },
+              { number: 28, text: 'The essay is due', options: [{ value: 'A', label: 'on Friday.' }, { value: 'B', label: 'next Monday.' }, { value: 'C', label: 'in two weeks.' }] },
+              { number: 29, text: 'They will focus on', options: [{ value: 'A', label: 'a single event.' }, { value: 'B', label: 'a whole century.' }, { value: 'C', label: 'one person.' }] },
+              { number: 30, text: 'The work will be', options: [{ value: 'A', label: 'a report.' }, { value: 'B', label: 'an essay.' }, { value: 'C', label: 'a presentation.' }] },
+            ],
+          },
+        ],
+      },
+      {
+        number: 4,
+        heading: 'Questions 31–40',
+        context: 'Listen to part of a lecture about volcanoes.',
+        transcript:
+          "Today's lecture is about volcanoes. The Earth's surface is broken into great tectonic plates, and most volcanoes form where these plates meet. " +
+          "Beneath the surface lies molten rock called magma. As pressure builds, the magma is forced upwards. " +
+          "In an eruption, a volcano may throw out clouds of ash, rivers of lava, and dangerous gases. " +
+          "Volcanoes are not all bad news, however. Over time, volcanic soil becomes extremely fertile, which is why people farm near them. " +
+          "To reduce the danger, scientists carefully monitor active volcanoes. " +
+          "Warning signs include small earthquakes, which often come before an eruption. " +
+          "If the signs are serious, the authorities will evacuate the people living nearby.",
+        groups: [
+          {
+            id: 'l4', type: 'inline-gap', instructions: 'Complete the notes below.',
+            wordLimit: 'Write ONE WORD ONLY for each answer.',
+            bodyHtml: `
+              <div style="font-weight:700;margin-bottom:.4rem">Volcanoes</div>
+              <div style="font-weight:700;margin-top:.6rem">How they form</div>
+              <ul style="margin:.2rem 0 .2rem 1.1rem;list-style:disc">
+                <li>most form where tectonic {{31}} meet</li>
+                <li>molten rock called {{32}} lies below</li>
+                <li>rising {{33}} forces it upwards</li>
+              </ul>
+              <div style="font-weight:700;margin-top:.6rem">An eruption produces</div>
+              <ul style="margin:.2rem 0 .2rem 1.1rem;list-style:disc">
+                <li>clouds of {{34}}</li>
+                <li>rivers of {{35}}</li>
+                <li>dangerous {{36}}</li>
+              </ul>
+              <div style="font-weight:700;margin-top:.6rem">People &amp; safety</div>
+              <ul style="margin:.2rem 0 .2rem 1.1rem;list-style:disc">
+                <li>volcanic soil is very {{37}}</li>
+                <li>scientists {{38}} active volcanoes</li>
+                <li>small {{39}} can be a warning sign</li>
+                <li>authorities may {{40}} nearby residents</li>
+              </ul>`,
+            questions: Array.from({ length: 10 }, (_, i) => ({ number: i + 31 })),
+          },
+        ],
+      },
+    ],
+  },
+
   reading: {
     durationSec: 60 * 60,
     answerKey: {
