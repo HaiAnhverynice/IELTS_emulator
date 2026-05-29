@@ -1,0 +1,75 @@
+import { useState } from 'react'
+import { useStore } from '../store'
+import { getSections, allQuestionNumbers } from '../lib/sections'
+import TopBar from '../components/shell/TopBar'
+import BottomNav, { isAnswered } from '../components/shell/BottomNav'
+import ReadingTest from '../components/modules/ReadingTest'
+import ListeningTest from '../components/modules/ListeningTest'
+import WritingTest from '../components/modules/WritingTest'
+
+function ConfirmSubmit({ onCancel, onConfirm }: { onCancel: () => void; onConfirm: () => void }) {
+  const test = useStore((s) => s.test)
+  const module = useStore((s) => s.module)
+  const answers = useStore((s) => s.answers)
+
+  const sections = test && module ? getSections(test, module) : []
+  const allQ = allQuestionNumbers(sections)
+  const answered = allQ.filter((n) => isAnswered(answers[n])).length
+  const isWriting = module === 'writing'
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40">
+      <div
+        className="w-[28rem] max-w-[90vw] border shadow-xl p-6"
+        style={{ background: 'var(--ielts-panel)', color: 'var(--ielts-panel-fg)', borderColor: 'var(--ielts-border)' }}
+      >
+        <h2 className="text-lg font-bold mb-2">Submit test?</h2>
+        {isWriting ? (
+          <p className="text-sm mb-5">Once you submit you cannot change your answers.</p>
+        ) : (
+          <p className="text-sm mb-5">
+            You have answered <span className="font-bold">{answered}</span> of {allQ.length} questions.
+            {answered < allQ.length && ' Unanswered questions will be marked wrong.'}
+          </p>
+        )}
+        <div className="flex justify-end gap-2">
+          <button className="px-4 py-1.5 border" style={{ borderColor: 'var(--ielts-border)' }} onClick={onCancel}>
+            Keep working
+          </button>
+          <button
+            className="px-4 py-1.5 font-bold border"
+            style={{ borderColor: 'var(--ielts-border)', background: 'var(--ielts-accent)', color: 'var(--ielts-accent-fg)' }}
+            onClick={onConfirm}
+          >
+            Submit
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default function TestRunner() {
+  const module = useStore((s) => s.module)
+  const submit = useStore((s) => s.submit)
+  const [confirm, setConfirm] = useState(false)
+
+  const doSubmit = () => {
+    setConfirm(false)
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel()
+    submit()
+  }
+
+  return (
+    <>
+      <TopBar />
+      <main className="flex-1 min-h-0 flex flex-col">
+        {module === 'reading' && <ReadingTest />}
+        {module === 'listening' && <ListeningTest />}
+        {module === 'writing' && <WritingTest />}
+      </main>
+      <BottomNav onSubmit={() => setConfirm(true)} />
+      {confirm && <ConfirmSubmit onCancel={() => setConfirm(false)} onConfirm={doSubmit} />}
+    </>
+  )
+}

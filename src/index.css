@@ -1,0 +1,138 @@
+@import "tailwindcss";
+
+/*
+  IELTS on-computer chrome.
+  The real test uses Arial/Helvetica, black-on-white by default, with two
+  alternate high-contrast colour themes and three font sizes selectable from
+  the settings menu. We model those with CSS variables on the root element.
+*/
+
+:root {
+  --ielts-bg: #ffffff;
+  --ielts-fg: #262626;
+  --ielts-panel: #f3f4f6;
+  --ielts-panel-fg: #262626;
+  --ielts-border: #d1d5db;
+  --ielts-accent: #1a73e8;
+  --ielts-accent-fg: #ffffff;
+  --ielts-flag: #e8a33d;
+  --ielts-highlight: #ffe14d;
+  --ielts-link: #1a4fa0;
+  --ielts-font-scale: 1;
+}
+
+/* Alternate colour themes (settings menu) */
+html[data-theme="white-on-black"] {
+  --ielts-bg: #000000;
+  --ielts-fg: #ffffff;
+  --ielts-panel: #1a1a1a;
+  --ielts-panel-fg: #ffffff;
+  --ielts-border: #4d4d4d;
+  --ielts-accent: #3b82f6;
+  --ielts-highlight: #6b5b00;
+  --ielts-link: #7db1ff;
+}
+html[data-theme="yellow-on-black"] {
+  --ielts-bg: #000000;
+  --ielts-fg: #ffff00;
+  --ielts-panel: #1a1a1a;
+  --ielts-panel-fg: #ffff00;
+  --ielts-border: #5c5c00;
+  --ielts-accent: #d4af00;
+  --ielts-accent-fg: #000000;
+  --ielts-highlight: #5c5c00;
+  --ielts-link: #ffff66;
+}
+
+/* Font size scale (settings menu) */
+html[data-font="standard"] { --ielts-font-scale: 1; }
+html[data-font="large"]    { --ielts-font-scale: 1.2; }
+html[data-font="xlarge"]   { --ielts-font-scale: 1.45; }
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: Arial, Helvetica, "Segoe UI", sans-serif;
+  background: var(--ielts-bg);
+  color: var(--ielts-fg);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Content text obeys the chosen font scale; chrome (bars) stays fixed. */
+.ielts-scale {
+  font-size: calc(1rem * var(--ielts-font-scale));
+  line-height: 1.55;
+}
+
+/* Text-selection highlight used by the Reading highlighter */
+.ielts-hl {
+  background: var(--ielts-highlight);
+  color: #000;
+  cursor: pointer;
+}
+html[data-theme="white-on-black"] .ielts-hl,
+html[data-theme="yellow-on-black"] .ielts-hl { color: #fff; }
+
+/* Inputs styled to match the flat IELTS look */
+.ielts-input {
+  border: 1px solid var(--ielts-border);
+  background: var(--ielts-bg);
+  color: var(--ielts-fg);
+  padding: 2px 6px;
+  outline: none;
+}
+.ielts-input:focus {
+  border-color: var(--ielts-accent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--ielts-accent) 35%, transparent);
+}
+
+/* Gap-fill inline blank */
+.ielts-gap {
+  display: inline-block;
+  min-width: 7.5rem;
+}
+
+/* Passage paragraph letters */
+.passage-letter {
+  font-weight: 700;
+  margin-right: .4rem;
+}
+
+/* Reading passage typography */
+.passage p { margin: 0 0 .9rem; }
+.passage h3 { font-weight: 700; margin: 0 0 .6rem; }
+
+/* Hide native scrollbars styling tweak for panels */
+.ielts-scroll { scrollbar-width: thin; }
+
+/* Question-number nav button */
+.qbtn {
+  position: relative;
+  min-width: 2rem;
+  height: 1.9rem;
+  border: 1px solid var(--ielts-border);
+  background: var(--ielts-bg);
+  color: var(--ielts-fg);
+  font-size: .8rem;
+  line-height: 1;
+}
+.qbtn[data-answered="true"] { font-weight: 700; }
+.qbtn[data-answered="true"]::after {
+  content: "";
+  position: absolute; left: 3px; right: 3px; bottom: 2px; height: 2px;
+  background: var(--ielts-accent);
+}
+.qbtn[data-current="true"] {
+  outline: 2px solid var(--ielts-accent);
+  outline-offset: -2px;
+}
+.qbtn[data-flagged="true"]::before {
+  content: "";
+  position: absolute; top: 0; right: 0;
+  border-width: 0 7px 7px 0;
+  border-style: solid;
+  border-color: transparent var(--ielts-flag) transparent transparent;
+}
