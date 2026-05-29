@@ -12,7 +12,6 @@ import { formatClock } from '../lib/hooks'
 import type { IeltsTest, ModuleType } from '../types'
 
 const MODULES: { key: ModuleType; label: string }[] = [
-  { key: 'listening', label: 'Listening' },
   { key: 'reading', label: 'Reading' },
   { key: 'writing', label: 'Writing' },
 ]
@@ -20,7 +19,7 @@ const MODULES: { key: ModuleType; label: string }[] = [
 function TestCard({ test, onRemove }: { test: IeltsTest; onRemove?: () => void }) {
   const loadAndStart = useStore((s) => s.loadAndStart)
   const counts: Record<ModuleType, number | null> = {
-    listening: test.listening ? test.listening.parts.flatMap((p) => p.groups).flatMap((g) => g.questions).length : null,
+    listening: null, // Listening module retired; not offered.
     reading: test.reading ? test.reading.passages.flatMap((p) => p.groups).flatMap((g) => g.questions).length : null,
     writing: test.writing ? test.writing.tasks.length : null,
   }
@@ -107,8 +106,8 @@ export default function Home() {
       <div className="max-w-3xl mx-auto p-6">
         <h1 className="text-2xl font-bold">IELTS on Computer — Practice Simulator</h1>
         <p className="opacity-70 mt-1">
-          A faithful re-creation of the computer-delivered IELTS test environment: timed Listening,
-          Reading and Writing modules, the same navigation, highlighter, settings and review tools.
+          A faithful re-creation of the computer-delivered IELTS test environment: timed Reading
+          and Writing modules, the same navigation, highlighter, settings and review tools.
         </p>
 
         <div className="border-l-4 p-3 my-5 text-sm" style={{ borderColor: 'var(--ielts-flag)', background: 'var(--ielts-panel)' }}>
@@ -116,7 +115,7 @@ export default function Home() {
           app (CC0) and is <em>not</em> affiliated with Cambridge or IELTS. Cambridge IELTS books are
           copyrighted, so they are not included. Use the importer to load any test you legally own, and
           add officially free practice material from <span className="font-mono">ielts.org</span>,
-          the British Council or IDP. Listening audio is spoken by your browser from a transcript.
+          the British Council or IDP.
         </div>
 
         {session && sessionTest && (

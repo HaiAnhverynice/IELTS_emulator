@@ -4,7 +4,6 @@ import { getSections, allQuestionNumbers } from '../lib/sections'
 import TopBar from '../components/shell/TopBar'
 import BottomNav, { isAnswered } from '../components/shell/BottomNav'
 import ReadingTest from '../components/modules/ReadingTest'
-import ListeningTest from '../components/modules/ListeningTest'
 import WritingTest from '../components/modules/WritingTest'
 
 function ConfirmSubmit({ onCancel, onConfirm }: { onCancel: () => void; onConfirm: () => void }) {
@@ -65,7 +64,6 @@ export default function TestRunner() {
       <TopBar />
       <main className="flex-1 min-h-0 flex flex-col">
         {module === 'reading' && <ReadingTest />}
-        {module === 'listening' && <ListeningTest />}
         {module === 'writing' && <WritingTest />}
       </main>
       <BottomNav onSubmit={() => setConfirm(true)} />
