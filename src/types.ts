@@ -32,14 +32,27 @@ export interface ListeningModule {
   answerKey: AnswerKey
 }
 
+/** One speaker turn in a dialogue. `speaker` is a voice id (see VOICE_MAP). */
+export interface TranscriptTurn {
+  speaker: string
+  text: string
+}
+
 export interface ListeningPart {
   number: 1 | 2 | 3 | 4
   /** Audio clip URL for this part (plays once, cannot be paused — like the
    *  exam). Optional: if absent, `transcript` is read aloud via the browser's
    *  speech synthesis so the sim works without copyrighted audio files. */
   audio?: string
-  /** Spoken script, used for text-to-speech playback when `audio` is absent. */
-  transcript?: string
+  /**
+   * Spoken script, used for generating the audio and for text-to-speech
+   * fallback. A plain string is a single-voice monologue. An array is a
+   * dialogue: each item is either a bare string (voiced by the next speaker in
+   * `speakers`, rotating) or an explicit `{ speaker, text }` turn.
+   */
+  transcript?: string | Array<string | TranscriptTurn>
+  /** Voice ids to rotate through for bare-string turns, e.g. ['M','W']. */
+  speakers?: string[]
   /** e.g. "Questions 1–10". */
   heading: string
   /** Short scenario blurb shown above the questions. */

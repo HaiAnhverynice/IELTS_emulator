@@ -48,16 +48,18 @@ export const practiceAcademic4: IeltsTest = {
         number: 1,
         heading: 'Questions 1–10',
         context: 'A person is registering for a library card.',
-        transcript:
-          "Good morning, Central Library. I'd like to register for a library card. " +
-          "Certainly. Your surname, please? Okonkwo — O, K, O, N, K, W, O. " +
-          "And your date of birth? The fifth of May. What's your address? It's twelve Oak Street. " +
-          "And the postcode? B S one, two A B. " +
-          "We offer adult and child cards — which do you need? An adult card, please. " +
-          "With an adult card you may borrow up to twelve items at a time, for a loan period of three weeks. " +
-          "Is there a fine for late returns? Yes, twenty pence per day per item. " +
-          "Do you need to see any identification? Yes, a passport will do. " +
+        transcript: [
+          "Good morning, Central Library. I'd like to register for a library card.",
+          "Certainly. Your surname, please? Okonkwo — O, K, O, N, K, W, O.",
+          "And your date of birth? The fifth of May. What's your address? It's twelve Oak Street.",
+          "And the postcode? B S one, two A B.",
+          "We offer adult and child cards — which do you need? An adult card, please.",
+          "With an adult card you may borrow up to twelve items at a time, for a loan period of three weeks.",
+          "Is there a fine for late returns? Yes, twenty pence per day per item.",
+          "Do you need to see any identification? Yes, a passport will do.",
           "And finally, we stay open late on Thursdays, until nine.",
+        ],
+        speakers: ['M', 'W'],
         groups: [
           {
             id: 'l1', type: 'inline-gap', instructions: 'Complete the form below.',
@@ -124,16 +126,18 @@ export const practiceAcademic4: IeltsTest = {
         number: 3,
         heading: 'Questions 21–30',
         context: 'Two students, Leo and Mia, plan a history essay.',
-        transcript:
-          "Leo: Let's divide up the work for our history essay. I'll find the primary sources online. " +
-          "Mia: Good. I'll visit the archive in town to look at the original documents. " +
-          "Leo: Who writes the outline? Mia: Let's do the outline together. " +
-          "Leo: Agreed, we'll write the outline together. And checking the references? Leo: I'll check the references at the end. " +
-          "Mia: So which aspects shall we cover? Leo: I think the causes and the timeline of events. " +
-          "Mia: Perfect — causes and timeline. How long does it need to be? Leo: Two thousand words. " +
-          "Mia: And the deadline? Leo: It's due in two weeks. " +
-          "Mia: What should we focus on? Leo: Just one event, in real depth, rather than the whole period. " +
+        transcript: [
+          "Leo: Let's divide up the work for our history essay. I'll find the primary sources online.",
+          "Mia: Good. I'll visit the archive in town to look at the original documents.",
+          "Leo: Who writes the outline? Mia: Let's do the outline together.",
+          "Leo: Agreed, we'll write the outline together. And checking the references? Leo: I'll check the references at the end.",
+          "Mia: So which aspects shall we cover? Leo: I think the causes and the timeline of events.",
+          "Mia: Perfect — causes and timeline. How long does it need to be? Leo: Two thousand words.",
+          "Mia: And the deadline? Leo: It's due in two weeks.",
+          "Mia: What should we focus on? Leo: Just one event, in real depth, rather than the whole period.",
           "Mia: And it's a written essay, not a presentation? Leo: Yes, a formal essay.",
+        ],
+        speakers: ['A', 'B'],
         groups: [
           {
             id: 'l3a', type: 'matching', instructions: 'Who will do each task? Choose from the list.',

@@ -87,30 +87,32 @@ export const practiceAcademic1: IeltsTest = {
         number: 1,
         heading: 'Questions 1–10',
         context: 'Listen and complete the membership form below.',
-        transcript:
-          "Good morning, Brookfield Community Sports Centre, how can I help? " +
-          "Hi, I'd like to join as a member. " +
-          "Of course. Can I take your full name? " +
-          "Yes, it's Helen Marsden. That's M, A, R, S, D, E, N. " +
-          "Thank you. And your date of birth? " +
-          "The twelfth of March, nineteen ninety-six. " +
-          "Lovely. What's your address? " +
-          "It's fourteen Brookfield Road, the same Brookfield as the centre. " +
-          "Great, and the postcode? " +
-          "It's L S six, four Q P. " +
-          "Which sport are you mainly interested in? " +
-          "Mainly badminton. " +
-          "We offer peak and off-peak memberships. Which would you like? " +
-          "Off-peak, please, as I can come during the day. " +
-          "That will be twenty-nine pounds fifty a month. " +
-          "That's fine. " +
-          "When would you like to start? " +
-          "The third of May, please. " +
-          "And how did you hear about us? " +
-          "I picked up a leaflet at the library. " +
-          "Do you have any special requirements? " +
-          "Just parking — I'll be driving in. " +
+        transcript: [
+          "Good morning, Brookfield Community Sports Centre, how can I help?",
+          "Hi, I'd like to join as a member.",
+          "Of course. Can I take your full name?",
+          "Yes, it's Helen Marsden. That's M, A, R, S, D, E, N.",
+          "Thank you. And your date of birth?",
+          "The twelfth of March, nineteen ninety-six.",
+          "Lovely. What's your address?",
+          "It's fourteen Brookfield Road, the same Brookfield as the centre.",
+          "Great, and the postcode?",
+          "It's L S six, four Q P.",
+          "Which sport are you mainly interested in?",
+          "Mainly badminton.",
+          "We offer peak and off-peak memberships. Which would you like?",
+          "Off-peak, please, as I can come during the day.",
+          "That will be twenty-nine pounds fifty a month.",
+          "That's fine.",
+          "When would you like to start?",
+          "The third of May, please.",
+          "And how did you hear about us?",
+          "I picked up a leaflet at the library.",
+          "Do you have any special requirements?",
+          "Just parking — I'll be driving in.",
           "No problem, members can use our car park.",
+        ],
+        speakers: ['M', 'W'],
         groups: [
           {
             id: 'l1',
@@ -243,21 +245,23 @@ export const practiceAcademic1: IeltsTest = {
         number: 3,
         heading: 'Questions 21–30',
         context: 'Two students, Mei and Tom, are planning a geography project.',
-        transcript:
-          "Mei: So, our geography project — we agreed it's on urban flooding, right? " +
-          "Tom: Yes, urban flooding. There's so much we could cover. " +
-          "Mei: I think we should focus on just one neighbourhood, rather than the whole city. " +
-          "Tom: Agreed — one neighbourhood is far more manageable. My main worry is time; we've only got three weeks. " +
-          "Mei: True, time is really tight. Did you see what our tutor suggested? " +
-          "Tom: She said we should use the council's flood maps. " +
-          "Mei: Good idea — the council maps will save us a lot of effort. Now, for collecting data, which methods shall we use? " +
-          "Tom: Let's use rainfall records and satellite images. I think those two are the most reliable. " +
-          "Mei: Perfect — rainfall records and satellite images it is. So who does what? " +
-          "Tom: I'll contact the council for the maps. " +
-          "Mei: Great, and I'll analyse the rainfall data. " +
-          "Tom: We should write the introduction together. " +
-          "Mei: Yes, let's both do the introduction. And I'll prepare the presentation afterwards. " +
+        transcript: [
+          "Mei: So, our geography project — we agreed it's on urban flooding, right?",
+          "Tom: Yes, urban flooding. There's so much we could cover.",
+          "Mei: I think we should focus on just one neighbourhood, rather than the whole city.",
+          "Tom: Agreed — one neighbourhood is far more manageable. My main worry is time; we've only got three weeks.",
+          "Mei: True, time is really tight. Did you see what our tutor suggested?",
+          "Tom: She said we should use the council's flood maps.",
+          "Mei: Good idea — the council maps will save us a lot of effort. Now, for collecting data, which methods shall we use?",
+          "Tom: Let's use rainfall records and satellite images. I think those two are the most reliable.",
+          "Mei: Perfect — rainfall records and satellite images it is. So who does what?",
+          "Tom: I'll contact the council for the maps.",
+          "Mei: Great, and I'll analyse the rainfall data.",
+          "Tom: We should write the introduction together.",
+          "Mei: Yes, let's both do the introduction. And I'll prepare the presentation afterwards.",
           "Tom: Thanks — that's the presentation sorted, then.",
+        ],
+        speakers: ['A', 'B'],
         groups: [
           {
             id: 'l3a',

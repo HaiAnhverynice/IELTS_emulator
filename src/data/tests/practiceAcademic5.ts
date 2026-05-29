@@ -48,14 +48,16 @@ export const practiceAcademic5: IeltsTest = {
         number: 1,
         heading: 'Questions 1–10',
         context: 'A customer is hiring a venue for a party.',
-        transcript:
-          "Good morning, Meadow Hall venue hire. I'd like to book a room for a party. " +
-          "Of course. Your surname? Delgado — D, E, L, G, A, D, O. What's the occasion? A birthday party. " +
-          "And the date? The twentieth of July. How many guests? About forty-five. " +
-          "For that number I'd suggest the Garden room. How many hours do you need it? Four hours. " +
-          "The hire cost for four hours is three hundred pounds, with a deposit of seventy-five pounds. " +
-          "Does that include furniture? Yes, tables and chairs are included. " +
+        transcript: [
+          "Good morning, Meadow Hall venue hire. I'd like to book a room for a party.",
+          "Of course. Your surname? Delgado — D, E, L, G, A, D, O. What's the occasion? A birthday party.",
+          "And the date? The twentieth of July. How many guests? About forty-five.",
+          "For that number I'd suggest the Garden room. How many hours do you need it? Four hours.",
+          "The hire cost for four hours is three hundred pounds, with a deposit of seventy-five pounds.",
+          "Does that include furniture? Yes, tables and chairs are included.",
           "When do I need to confirm? Please confirm by Friday.",
+        ],
+        speakers: ['M', 'W'],
         groups: [
           {
             id: 'l1', type: 'inline-gap', instructions: 'Complete the booking form below.',
@@ -122,16 +124,18 @@ export const practiceAcademic5: IeltsTest = {
         number: 3,
         heading: 'Questions 21–30',
         context: 'Two students, Ken and Lucy, plan a marketing project.',
-        transcript:
-          "Ken: Let's plan our marketing project. I'll design the survey. " +
-          "Lucy: Good. I'll interview customers in the shopping centre. " +
-          "Ken: Who analyses the results? Lucy: Let's analyse them together. " +
-          "Ken: Agreed, we'll do the analysis together. And the poster? Ken: I'll make the poster. " +
-          "Lucy: Which products should we focus on? Ken: I think drinks and clothing. " +
-          "Lucy: Perfect — drinks and clothing. Who's our target group? Ken: Teenagers, I think. " +
-          "Lucy: How big a sample? Ken: Let's aim for one hundred people. " +
-          "Lucy: And the method — online or face to face? Ken: An online survey will be quickest. " +
+        transcript: [
+          "Ken: Let's plan our marketing project. I'll design the survey.",
+          "Lucy: Good. I'll interview customers in the shopping centre.",
+          "Ken: Who analyses the results? Lucy: Let's analyse them together.",
+          "Ken: Agreed, we'll do the analysis together. And the poster? Ken: I'll make the poster.",
+          "Lucy: Which products should we focus on? Ken: I think drinks and clothing.",
+          "Lucy: Perfect — drinks and clothing. Who's our target group? Ken: Teenagers, I think.",
+          "Lucy: How big a sample? Ken: Let's aim for one hundred people.",
+          "Lucy: And the method — online or face to face? Ken: An online survey will be quickest.",
           "Lucy: Finally, how do we present the results? Ken: As graphs, I think, they're clearest.",
+        ],
+        speakers: ['A', 'B'],
         groups: [
           {
             id: 'l3a', type: 'matching', instructions: 'Who will do each task? Choose from the list.',

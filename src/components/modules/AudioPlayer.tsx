@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useStore } from '../../store'
 import { asset } from '../../lib/asset'
+import { buildPlayScript, VOICE_MAP } from '../../lib/listeningScript'
 import type { ListeningPart } from '../../types'
 
 type Mode = 'audio' | 'tts' | 'none'
@@ -72,14 +73,25 @@ export default function AudioPlayer({ part, onEnded }: { part: ListeningPart; on
     const synth = window.speechSynthesis
     synth.cancel()
 
-    // Chrome silently truncates a single long utterance (~15s). Speak the
-    // transcript one sentence at a time, queued, with a short gap between
-    // sentences so the pace is natural and easy to follow.
-    const text = part.transcript
-    const chunks = text.match(/[^.!?]+[.!?]*\s*/g) ?? [text]
-    const total = Math.max(1, text.length)
+    // Exam-style script: section instructions, a reading pause, the recording
+    // with a distinct voice per speaker, and an end-of-section pause. Each
+    // speech segment is split into sentences and queued (Chrome silently
+    // truncates a single long utterance ~15s).
+    const segments = buildPlayScript(part)
+    // Flatten into a queue of items the speaker loop walks through.
+    type Item = { kind: 'speech'; text: string; pitch: number } | { kind: 'pause'; ms: number }
+    const queue: Item[] = []
+    for (const seg of segments) {
+      if (seg.kind === 'pause') {
+        queue.push({ kind: 'pause', ms: (seg.seconds ?? 0) * 1000 })
+      } else {
+        const pitch = VOICE_MAP[seg.voice ?? 'narrator']?.pitch ?? 1
+        const sentences = (seg.text ?? '').match(/[^.!?]+[.!?]*\s*/g) ?? [seg.text ?? '']
+        for (const s of sentences) if (s.trim()) queue.push({ kind: 'speech', text: s, pitch })
+      }
+    }
+    const total = Math.max(1, queue.length)
     let i = 0
-    let spoken = 0
     ttsActive.current = true
     startedRef.current = false
 
@@ -87,22 +99,29 @@ export default function AudioPlayer({ part, onEnded }: { part: ListeningPart; on
     setNeedsGesture(false)
     setPlaying(true)
 
-    // Wait for voices before speaking (empty on a cold origin), then queue
-    // sentences one at a time so Chrome doesn't truncate a long utterance.
+    // Wait for voices before speaking (empty on a cold origin), then walk the
+    // queue: speak each sentence with its speaker's pitch; honour pauses.
     loadVoices().then((voices) => {
       if (!ttsActive.current) return
       const voice = pickVoice(voices)
 
-      const speakNext = () => {
+      const next = () => {
         if (!ttsActive.current) return
-        if (i >= chunks.length) {
+        if (i >= queue.length) {
           finish()
           return
         }
-        const chunk = chunks[i]
-        const u = new SpeechSynthesisUtterance(chunk)
+        const item = queue[i]
+        setProgress(Math.min(0.99, i / total))
+        if (item.kind === 'pause') {
+          i++
+          setTimeout(next, item.ms)
+          return
+        }
+        const u = new SpeechSynthesisUtterance(item.text)
         u.volume = volume
         u.rate = 0.95 // a touch under natural so it stays followable
+        u.pitch = item.pitch // distinguishes speakers when only one voice exists
         u.lang = 'en-GB'
         if (voice) u.voice = voice
         u.onstart = () => {
@@ -110,19 +129,17 @@ export default function AudioPlayer({ part, onEnded }: { part: ListeningPart; on
           setNeedsGesture(false)
         }
         u.onend = () => {
-          spoken += chunk.length
-          setProgress(Math.min(0.99, spoken / total))
           i++
-          setTimeout(speakNext, 350) // brief pause between sentences
+          setTimeout(next, 250) // brief gap between sentences
         }
         u.onerror = () => {
           i++
-          setTimeout(speakNext, 0)
+          setTimeout(next, 0)
         }
         synth.speak(u)
       }
 
-      speakNext()
+      next()
     })
   }
 

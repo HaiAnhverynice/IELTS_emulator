@@ -48,14 +48,16 @@ export const practiceAcademic3: IeltsTest = {
         number: 1,
         heading: 'Questions 1–10',
         context: 'A caller is enrolling in an evening cookery course.',
-        transcript:
-          "Hello, Adult Learning Centre. How can I help? Hi, I'd like to enrol in an evening cookery course. " +
-          "Of course. Could I take your surname? It's Patterson — P, A, T, T, E, R, S, O, N. " +
-          "And which course would you like? The Italian cookery one, please. " +
-          "That course runs on Thursdays. What time does it start? At half past six — six thirty. " +
-          "How long does it last? It's an eight-week course. And how much does it cost? One hundred and twenty pounds. " +
-          "Do I need to bring anything? Just an apron. Which room is it in? Room four. " +
+        transcript: [
+          "Hello, Adult Learning Centre. How can I help? Hi, I'd like to enrol in an evening cookery course.",
+          "Of course. Could I take your surname? It's Patterson — P, A, T, T, E, R, S, O, N.",
+          "And which course would you like? The Italian cookery one, please.",
+          "That course runs on Thursdays. What time does it start? At half past six — six thirty.",
+          "How long does it last? It's an eight-week course. And how much does it cost? One hundred and twenty pounds.",
+          "Do I need to bring anything? Just an apron. Which room is it in? Room four.",
           "And who teaches it? Chef Bianchi. When should I register by? Please register by Friday this week.",
+        ],
+        speakers: ['M', 'W'],
         groups: [
           {
             id: 'l1', type: 'inline-gap', instructions: 'Complete the form below.',
@@ -121,16 +123,18 @@ export const practiceAcademic3: IeltsTest = {
         number: 3,
         heading: 'Questions 21–30',
         context: 'Two students, Sam and Ria, plan a biology field trip.',
-        transcript:
-          "Sam: Let's sort out our biology field trip. I'll bring the nets for catching insects. " +
-          "Ria: Great. I'll bring the notebooks for recording what we find. " +
-          "Sam: Good. What about a first-aid kit? Ria: Let's both bring one, just to be safe. " +
-          "Sam: Agreed, we'll both bring a first-aid kit. And the camera? Ria: I'll bring my camera as well. " +
-          "Sam: Now, which habitats should we study? Ria: I think the woodland and the river are the most interesting. " +
-          "Sam: Perfect — woodland and river it is. The trip is on Saturday, isn't it? Ria: Yes, Saturday. " +
-          "Sam: Where do we meet? Ria: At the school, then we travel together. " +
-          "Sam: And the main aim is to count the different species, right? Ria: Yes, to count species. " +
+        transcript: [
+          "Sam: Let's sort out our biology field trip. I'll bring the nets for catching insects.",
+          "Ria: Great. I'll bring the notebooks for recording what we find.",
+          "Sam: Good. What about a first-aid kit? Ria: Let's both bring one, just to be safe.",
+          "Sam: Agreed, we'll both bring a first-aid kit. And the camera? Ria: I'll bring my camera as well.",
+          "Sam: Now, which habitats should we study? Ria: I think the woodland and the river are the most interesting.",
+          "Sam: Perfect — woodland and river it is. The trip is on Saturday, isn't it? Ria: Yes, Saturday.",
+          "Sam: Where do we meet? Ria: At the school, then we travel together.",
+          "Sam: And the main aim is to count the different species, right? Ria: Yes, to count species.",
           "Sam: When's the report due? Ria: In two weeks.",
+        ],
+        speakers: ['A', 'B'],
         groups: [
           {
             id: 'l3a', type: 'matching', instructions: 'Who will bring each item? Choose from the list.',

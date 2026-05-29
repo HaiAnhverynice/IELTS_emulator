@@ -89,27 +89,29 @@ export const practiceAcademic2: IeltsTest = {
         number: 1,
         heading: 'Questions 1–10',
         context: 'A customer is booking a holiday cottage by phone.',
-        transcript:
-          "Good afternoon, Lakeside Cottages. How can I help? " +
-          "Hello, I'd like to book a cottage. " +
-          "Certainly. Can I take your surname? " +
-          "It's Whitfield. W, H, I, T, F, I, E, L, D. " +
-          "And how many nights would you like to stay? " +
-          "Four nights, please. " +
-          "Which cottage were you interested in? " +
-          "Rose Cottage looked lovely. " +
-          "Good choice — Rose has a beautiful sea view. " +
-          "We're also bringing our dog. Is that all right? " +
-          "Yes, one dog is allowed in Rose. " +
-          "How much is it per night? " +
-          "It's eighty-five pounds a night. " +
-          "And is there a deposit? " +
-          "Yes, we ask for a fifty-pound deposit. " +
-          "When will you be arriving? " +
-          "On the fourteenth of June. " +
-          "We'll send you the directions by email. " +
-          "Lovely. One more thing — could we have a cot for the baby? " +
+        transcript: [
+          "Good afternoon, Lakeside Cottages. How can I help?",
+          "Hello, I'd like to book a cottage.",
+          "Certainly. Can I take your surname?",
+          "It's Whitfield. W, H, I, T, F, I, E, L, D.",
+          "And how many nights would you like to stay?",
+          "Four nights, please.",
+          "Which cottage were you interested in?",
+          "Rose Cottage looked lovely.",
+          "Good choice — Rose has a beautiful sea view.",
+          "We're also bringing our dog. Is that all right?",
+          "Yes, one dog is allowed in Rose.",
+          "How much is it per night?",
+          "It's eighty-five pounds a night.",
+          "And is there a deposit?",
+          "Yes, we ask for a fifty-pound deposit.",
+          "When will you be arriving?",
+          "On the fourteenth of June.",
+          "We'll send you the directions by email.",
+          "Lovely. One more thing — could we have a cot for the baby?",
           "Of course, we'll put a cot in the bedroom for you.",
+        ],
+        speakers: ['M', 'W'],
         groups: [
           {
             id: 'l1',
@@ -185,21 +187,23 @@ export const practiceAcademic2: IeltsTest = {
         number: 3,
         heading: 'Questions 21–30',
         context: 'Two students, Anna and Ben, plan a class presentation.',
-        transcript:
-          "Anna: So our presentation is on energy. Shall we cover just solar, or wind, or a mix? " +
-          "Ben: Let's do a mix of renewables — it'll be more interesting than just one. " +
-          "Anna: Agreed, a mix of renewables. And it's for our own class, isn't it, not the public? " +
-          "Ben: Yes, just our class. The teacher said fifteen minutes. " +
-          "Anna: Fifteen minutes — that's not long. My worry is we'll try to include too much information. " +
-          "Ben: True, too much detail is the main risk. We should keep it focused. " +
-          "Anna: For sources, I think the government website is reliable. " +
-          "Ben: Yes, the government website, and that documentary we watched would be great too. " +
-          "Anna: Perfect — the government website and the documentary. Now, who does what? " +
-          "Ben: You're good at design, so you make the slides. " +
-          "Anna: Happy to. And you find the statistics. " +
-          "Ben: Sure, I'll get the statistics. We should rehearse together though. " +
-          "Anna: Definitely, let's rehearse together. And can you write the conclusion? " +
+        transcript: [
+          "Anna: So our presentation is on energy. Shall we cover just solar, or wind, or a mix?",
+          "Ben: Let's do a mix of renewables — it'll be more interesting than just one.",
+          "Anna: Agreed, a mix of renewables. And it's for our own class, isn't it, not the public?",
+          "Ben: Yes, just our class. The teacher said fifteen minutes.",
+          "Anna: Fifteen minutes — that's not long. My worry is we'll try to include too much information.",
+          "Ben: True, too much detail is the main risk. We should keep it focused.",
+          "Anna: For sources, I think the government website is reliable.",
+          "Ben: Yes, the government website, and that documentary we watched would be great too.",
+          "Anna: Perfect — the government website and the documentary. Now, who does what?",
+          "Ben: You're good at design, so you make the slides.",
+          "Anna: Happy to. And you find the statistics.",
+          "Ben: Sure, I'll get the statistics. We should rehearse together though.",
+          "Anna: Definitely, let's rehearse together. And can you write the conclusion?",
           "Ben: No problem, I'll write the conclusion.",
+        ],
+        speakers: ['A', 'B'],
         groups: [
           {
             id: 'l3a',
