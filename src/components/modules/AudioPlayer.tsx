@@ -5,6 +5,18 @@ import type { ListeningPart } from '../../types'
 
 type Mode = 'audio' | 'tts' | 'none'
 
+/** Prefer a British English voice, then any English, else the default. */
+function pickVoice(): SpeechSynthesisVoice | null {
+  if (!('speechSynthesis' in window)) return null
+  const voices = window.speechSynthesis.getVoices()
+  if (!voices.length) return null
+  return (
+    voices.find((v) => v.lang === 'en-GB') ??
+    voices.find((v) => v.lang?.startsWith('en')) ??
+    null
+  )
+}
+
 /**
  * Listening audio that mimics the exam: it plays once automatically and cannot
  * be paused or rewound. Parent must mount this with key={partIndex} so each
@@ -19,6 +31,7 @@ export default function AudioPlayer({ part, onEnded }: { part: ListeningPart; on
   const audioRef = useRef<HTMLAudioElement>(null)
   const onEndedRef = useRef(onEnded)
   onEndedRef.current = onEnded
+  const ttsActive = useRef(false) // guards the sentence queue against stale resumes
 
   const hasTTS = !!part.transcript && 'speechSynthesis' in window
   const initialMode: Mode = part.audio ? 'audio' : hasTTS ? 'tts' : 'none'
@@ -38,17 +51,47 @@ export default function AudioPlayer({ part, onEnded }: { part: ListeningPart; on
     if (!part.transcript) return
     const synth = window.speechSynthesis
     synth.cancel()
-    const u = new SpeechSynthesisUtterance(part.transcript)
-    u.volume = volume
-    u.rate = 1
-    u.lang = 'en-GB'
-    const total = Math.max(1, part.transcript.length)
-    u.onboundary = (e) => setProgress(Math.min(0.99, e.charIndex / total))
-    u.onend = finish
+
+    // Chrome silently truncates a single long utterance (~15s). Speak the
+    // transcript one sentence at a time, queued, with a short gap between
+    // sentences so the pace is natural and easy to follow.
+    const text = part.transcript
+    const chunks = text.match(/[^.!?]+[.!?]*\s*/g) ?? [text]
+    const total = Math.max(1, text.length)
+    const voice = pickVoice()
+    let i = 0
+    let spoken = 0
+    ttsActive.current = true
+
+    const speakNext = () => {
+      if (!ttsActive.current) return
+      if (i >= chunks.length) {
+        finish()
+        return
+      }
+      const chunk = chunks[i]
+      const u = new SpeechSynthesisUtterance(chunk)
+      u.volume = volume
+      u.rate = 0.95 // a touch under natural so it stays followable
+      u.lang = 'en-GB'
+      if (voice) u.voice = voice
+      u.onend = () => {
+        spoken += chunk.length
+        setProgress(Math.min(0.99, spoken / total))
+        i++
+        setTimeout(speakNext, 350) // brief pause between sentences
+      }
+      u.onerror = () => {
+        i++
+        setTimeout(speakNext, 0)
+      }
+      synth.speak(u)
+    }
+
     setMode('tts')
     setNeedsGesture(false)
     setPlaying(true)
-    synth.speak(u)
+    speakNext()
   }
 
   const startAudio = () => {
@@ -82,12 +125,14 @@ export default function AudioPlayer({ part, onEnded }: { part: ListeningPart; on
       }, 500)
       return () => {
         clearTimeout(t)
+        ttsActive.current = false
         window.speechSynthesis.cancel()
       }
     } else {
       setMode('none')
     }
     return () => {
+      ttsActive.current = false
       if ('speechSynthesis' in window) window.speechSynthesis.cancel()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
