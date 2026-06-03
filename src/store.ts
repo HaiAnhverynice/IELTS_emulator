@@ -213,7 +213,23 @@ export const useStore = create<RunState>((set, get) => ({
   setWriting: (task, text) =>
     set((s) => ({ writing: { ...s.writing, [task]: text } })),
 
-  addHighlight: (h) => set((s) => ({ highlights: [...s.highlights, h] })),
+  // Adding a highlight that overlaps existing ones in the same passage merges
+  // them into a single highlight (union range, new colour) instead of stacking
+  // overlapping spans — stacked spans break the DOM re-wrap and let you pile
+  // the same colour on itself. Re-selecting an existing highlight and picking a
+  // colour therefore just recolours it.
+  addHighlight: (h) =>
+    set((s) => {
+      const overlaps = (a: Highlight) =>
+        a.passage === h.passage && a.start < h.end && h.start < a.end
+      const hit = s.highlights.filter(overlaps)
+      if (hit.length === 0) return { highlights: [...s.highlights, h] }
+      const start = Math.min(h.start, ...hit.map((x) => x.start))
+      const end = Math.max(h.end, ...hit.map((x) => x.end))
+      const note = h.note ?? hit.find((x) => x.note)?.note
+      const merged: Highlight = { ...h, start, end, note }
+      return { highlights: [...s.highlights.filter((x) => !overlaps(x)), merged] }
+    }),
 
   removeHighlight: (id) =>
     set((s) => ({ highlights: s.highlights.filter((h) => h.id !== id) })),

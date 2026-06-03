@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { memo, useCallback, useEffect, useRef, useState, type RefObject } from 'react'
 import { useStore } from '../../store'
 import type { HighlightColor } from '../../types'
 
@@ -86,8 +86,8 @@ function setColorOnSpans(id: string, color: HighlightColor, container: HTMLEleme
   })
 }
 
-/** Wrap a text portion in a transient preview span (no hl-id, distinct class
- *  so it is never confused with a committed highlight). */
+/** Wrap a portion of one text node in a transient preview span (no hl-id,
+ *  distinct class) so it is never confused with a committed highlight. */
 function wrapPreviewPortion(node: Text, start: number, end: number) {
   if (end <= start) return
   const r = document.createRange()
@@ -102,8 +102,9 @@ function wrapPreviewPortion(node: Text, start: number, end: number) {
   }
 }
 
-/** Show a temporary highlight over [start,end] indicating what will be
- *  highlighted once a colour is chosen. */
+/** Paint a temporary preview over [start,end] showing what will be
+ *  highlighted once a colour is chosen. Run from an effect (after React
+ *  commits) so the manual DOM mutation survives the re-render. */
 function applyPreview(container: HTMLElement, start: number, end: number) {
   const s = locate(container, start)
   const e = locate(container, end)
@@ -120,7 +121,7 @@ function applyPreview(container: HTMLElement, start: number, end: number) {
   for (const op of ops) wrapPreviewPortion(op.node, op.start, op.end)
 }
 
-/** Remove any transient preview spans, restoring the original text. */
+/** Remove all transient preview spans, restoring the original text. */
 function clearPreview(container: HTMLElement) {
   container.querySelectorAll<HTMLElement>('span.ielts-hl-preview').forEach((span) => {
     const parent = span.parentNode
@@ -159,6 +160,33 @@ interface Menu {
   start?: number
   end?: number
 }
+
+/**
+ * The passage body, rendered via dangerouslySetInnerHTML. Memoised so it never
+ * re-renders on menu/state changes: otherwise React re-commits the element and
+ * wipes the highlight spans we mutate into it by hand (they would vanish every
+ * time the highlight menu pops up and only reappear after the next commit).
+ * All props are stable (constant html, stable ref + handler), so it renders
+ * exactly once.
+ */
+const PassageBody = memo(function PassageBody({
+  html,
+  innerRef,
+  onMouseUp,
+}: {
+  html: string
+  innerRef: RefObject<HTMLDivElement | null>
+  onMouseUp: (e: React.MouseEvent) => void
+}) {
+  return (
+    <div
+      ref={innerRef}
+      onMouseUp={onMouseUp}
+      className="passage ielts-scale"
+      dangerouslySetInnerHTML={{ __html: html }}
+    />
+  )
+})
 
 export default function Highlighter({ html, passage }: { html: string; passage: number }) {
   const ref = useRef<HTMLDivElement>(null)
@@ -202,18 +230,29 @@ export default function Highlighter({ html, passage }: { html: string; passage: 
 
   useEffect(() => {
     const onDocDown = (e: MouseEvent) => {
-      // Clicks on the menu keep the preview alive (a colour may be chosen);
-      // clicking anywhere else dismisses the menu and the temporary highlight.
-      if (!(e.target as HTMLElement).closest('.hl-menu')) {
-        setMenu(null)
-        if (ref.current) clearPreview(ref.current)
-      }
+      // Clicking the menu keeps the preview (a colour may be chosen); clicking
+      // anywhere else dismisses the menu, which removes the preview.
+      if (!(e.target as HTMLElement).closest('.hl-menu')) setMenu(null)
     }
     document.addEventListener('mousedown', onDocDown)
     return () => document.removeEventListener('mousedown', onDocDown)
   }, [])
 
-  const onMouseUp = (e: React.MouseEvent) => {
+  // Paint a temporary preview of the pending selection while the colour menu is
+  // open. Done in an effect (after commit) so the manual DOM mutation survives
+  // the re-render; the cleanup removes it when the menu closes or changes.
+  useEffect(() => {
+    const container = ref.current
+    if (!container) return
+    if (menu?.mode === 'select' && menu.start != null && menu.end != null) {
+      applyPreview(container, menu.start, menu.end)
+      return () => clearPreview(container)
+    }
+  }, [menu])
+
+  // Stable so the memoised PassageBody never re-renders (see PassageBody note).
+  // References only setMenu (stable) and the ref, so [] deps are safe.
+  const onMouseUp = useCallback((e: React.MouseEvent) => {
     const sel = window.getSelection()
     const container = ref.current
     if (!container) return
@@ -228,13 +267,10 @@ export default function Highlighter({ html, passage }: { html: string; passage: 
         return
       }
       const rect = range.getBoundingClientRect()
-      // Drop the live selection now that offsets are captured: the native
-      // selection paint would otherwise mask existing highlights until an
-      // option is picked. A transient preview span (distinct colour) marks the
-      // text that will be highlighted; it is removed on dismiss or commit.
+      // Drop the native selection (its paint vanishes once the menu takes
+      // focus anyway) and let the preview effect paint a stable DOM highlight
+      // in a distinct colour over the captured offsets instead.
       sel.removeAllRanges()
-      clearPreview(container)
-      applyPreview(container, start, end)
       setMenu({ x: rect.left + rect.width / 2, y: rect.top - 8, mode: 'select', start, end })
       return
     }
@@ -245,7 +281,7 @@ export default function Highlighter({ html, passage }: { html: string; passage: 
       return
     }
     setMenu(null)
-  }
+  }, [])
 
   const askNote = (id: string) => {
     const note = window.prompt('Note:') ?? ''
@@ -256,6 +292,8 @@ export default function Highlighter({ html, passage }: { html: string; passage: 
     if (menu?.mode !== 'select' || menu.start == null || menu.end == null) return
     const id = genId()
     window.getSelection()?.removeAllRanges()
+    // Remove the preview first so the reconcile effect wraps the committed
+    // highlight over clean, un-split text nodes.
     if (ref.current) clearPreview(ref.current)
     addHighlight({ id, passage, start: menu.start, end: menu.end, color })
     if (withNote) askNote(id)
@@ -269,7 +307,7 @@ export default function Highlighter({ html, passage }: { html: string; passage: 
 
   return (
     <div className="relative">
-      <div ref={ref} onMouseUp={onMouseUp} className="passage ielts-scale" dangerouslySetInnerHTML={{ __html: html }} />
+      <PassageBody html={html} innerRef={ref} onMouseUp={onMouseUp} />
 
       {menu && (
         <div

@@ -20,7 +20,7 @@
   --ielts-hl-yellow: #ffe14d;
   --ielts-hl-green: #9ae6b4;
   --ielts-hl-pink: #fbb6ce;
-  --ielts-hl-preview: #9cc6ff;
+  --ielts-hl-preview: #c4b5fd;
   --ielts-hl-fg: #000;
   --ielts-link: #1a4fa0;
   --ielts-font-scale: 1;
@@ -38,7 +38,7 @@ html[data-theme="white-on-black"] {
   --ielts-hl-yellow: #6b5b00;
   --ielts-hl-green: #1f5132;
   --ielts-hl-pink: #6b2747;
-  --ielts-hl-preview: #2d4a73;
+  --ielts-hl-preview: #5b4b8a;
   --ielts-hl-fg: #fff;
   --ielts-link: #7db1ff;
 }
@@ -54,7 +54,7 @@ html[data-theme="yellow-on-black"] {
   --ielts-hl-yellow: #5c5c00;
   --ielts-hl-green: #1f5132;
   --ielts-hl-pink: #6b2747;
-  --ielts-hl-preview: #2d4a73;
+  --ielts-hl-preview: #5b4b8a;
   --ielts-hl-fg: #fff;
   --ielts-link: #ffff66;
 }
@@ -91,8 +91,10 @@ body {
 .ielts-hl[data-color="green"] { background: var(--ielts-hl-green); }
 .ielts-hl[data-color="pink"] { background: var(--ielts-hl-pink); }
 
-/* Transient preview shown while the colour menu is open, distinct from every
- * committed pen colour so it reads as "pending". */
+/* Transient preview painted while the colour menu is open. Distinct (indigo)
+ * from every pen colour, with a dashed outline, so it clearly reads as
+ * "about to be highlighted". Removed when a colour is chosen or the menu
+ * is dismissed. */
 .ielts-hl-preview {
   background: var(--ielts-hl-preview);
   color: var(--ielts-hl-fg);
@@ -100,8 +102,9 @@ body {
   border-radius: 2px;
 }
 
-/* While dragging a new selection, keep existing highlights legible: a
- * translucent selection paint blends over them instead of masking them. */
+/* During the drag itself (before the menu opens) the native selection paint is
+ * translucent so existing highlights still show through instead of being
+ * masked. */
 .passage ::selection {
   background: color-mix(in srgb, var(--ielts-accent) 35%, transparent);
 }
