@@ -17,13 +17,17 @@ const MODULES: { key: ModuleType; label: string }[] = [
   { key: 'writing', label: 'Writing' },
 ]
 
-function TestCard({ test, onRemove }: { test: IeltsTest; onRemove?: () => void }) {
+/** Number of questions (or tasks, for Writing) a test offers for a module,
+ *  or null if the test does not include that module. */
+function moduleCount(test: IeltsTest, module: ModuleType): number | null {
+  if (module === 'listening') return test.listening ? test.listening.parts.flatMap((p) => p.groups).flatMap((g) => g.questions).length : null
+  if (module === 'reading') return test.reading ? test.reading.passages.flatMap((p) => p.groups).flatMap((g) => g.questions).length : null
+  return test.writing ? test.writing.tasks.length : null
+}
+
+function TestCard({ test, module, onRemove }: { test: IeltsTest; module: ModuleType; onRemove?: () => void }) {
   const loadAndStart = useStore((s) => s.loadAndStart)
-  const counts: Record<ModuleType, number | null> = {
-    listening: test.listening ? test.listening.parts.flatMap((p) => p.groups).flatMap((g) => g.questions).length : null,
-    reading: test.reading ? test.reading.passages.flatMap((p) => p.groups).flatMap((g) => g.questions).length : null,
-    writing: test.writing ? test.writing.tasks.length : null,
-  }
+  const count = moduleCount(test, module)
 
   return (
     <div className="border p-4" style={{ borderColor: 'var(--ielts-border)' }}>
@@ -41,22 +45,16 @@ function TestCard({ test, onRemove }: { test: IeltsTest; onRemove?: () => void }
 
       {test.source && <p className="text-xs opacity-60 mt-1">{test.source}</p>}
 
-      <div className="flex flex-wrap gap-2 mt-3">
-        {MODULES.map((m) => {
-          const available = counts[m.key] != null
-          return (
-            <button
-              key={m.key}
-              disabled={!available}
-              onClick={() => loadAndStart(test, m.key)}
-              className="px-3 py-1.5 border text-sm font-semibold disabled:opacity-30"
-              style={{ borderColor: 'var(--ielts-border)' }}
-            >
-              {m.label}
-              {available && m.key !== 'writing' && <span className="opacity-50"> · {counts[m.key]}Q</span>}
-            </button>
-          )
-        })}
+      <div className="flex items-center gap-2 mt-3">
+        <button
+          onClick={() => loadAndStart(test, module)}
+          className="px-3 py-1.5 border text-sm font-semibold"
+          style={{ borderColor: 'var(--ielts-border)', background: 'var(--ielts-accent)', color: 'var(--ielts-accent-fg)' }}
+        >
+          Start {MODULES.find((m) => m.key === module)?.label}
+        </button>
+        {module !== 'writing' && <span className="text-sm opacity-60">{count} questions</span>}
+        {module === 'writing' && <span className="text-sm opacity-60">{count} tasks</span>}
       </div>
     </div>
   )
@@ -68,6 +66,7 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null)
   const [showImport, setShowImport] = useState(false)
   const [session, setSession] = useState(() => loadSession())
+  const [tab, setTab] = useState<ModuleType>('listening')
   const fileRef = useRef<HTMLInputElement>(null)
   const resumeSession = useStore((s) => s.resumeSession)
 
@@ -155,14 +154,49 @@ export default function Home() {
         )}
 
         <h2 className="font-bold text-lg mt-6 mb-2">Tests</h2>
-        <div className="grid gap-3">
-          {builtInTests.map((t) => (
-            <TestCard key={t.id} test={t} />
-          ))}
-          {imported.map((t) => (
-            <TestCard key={t.id} test={t} onRemove={() => removeTest(t.id)} />
-          ))}
+
+        {/* Module tabs: each shows only the tests that include that module. */}
+        <div className="flex border-b mb-3" style={{ borderColor: 'var(--ielts-border)' }}>
+          {MODULES.map((m) => {
+            const active = tab === m.key
+            return (
+              <button
+                key={m.key}
+                onClick={() => setTab(m.key)}
+                className="px-4 py-2 text-sm font-semibold -mb-px border-b-2"
+                style={{
+                  borderColor: active ? 'var(--ielts-accent)' : 'transparent',
+                  color: active ? 'var(--ielts-accent)' : 'inherit',
+                  opacity: active ? 1 : 0.6,
+                }}
+              >
+                {m.label}
+              </button>
+            )
+          })}
         </div>
+
+        {(() => {
+          const builtIn = builtInTests.filter((t) => moduleCount(t, tab) != null)
+          const userTests = imported.filter((t) => moduleCount(t, tab) != null)
+          if (builtIn.length === 0 && userTests.length === 0) {
+            return (
+              <p className="text-sm opacity-60">
+                No tests include a {MODULES.find((m) => m.key === tab)?.label} module yet. Import one below.
+              </p>
+            )
+          }
+          return (
+            <div className="grid gap-3">
+              {builtIn.map((t) => (
+                <TestCard key={t.id} test={t} module={tab} />
+              ))}
+              {userTests.map((t) => (
+                <TestCard key={t.id} test={t} module={tab} onRemove={() => removeTest(t.id)} />
+              ))}
+            </div>
+          )
+        })()}
 
         <div className="mt-6">
           <div className="flex gap-2">
