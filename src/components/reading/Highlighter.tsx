@@ -86,6 +86,51 @@ function setColorOnSpans(id: string, color: HighlightColor, container: HTMLEleme
   })
 }
 
+/** Wrap a text portion in a transient preview span (no hl-id, distinct class
+ *  so it is never confused with a committed highlight). */
+function wrapPreviewPortion(node: Text, start: number, end: number) {
+  if (end <= start) return
+  const r = document.createRange()
+  r.setStart(node, start)
+  r.setEnd(node, end)
+  const span = document.createElement('span')
+  span.className = 'ielts-hl-preview'
+  try {
+    r.surroundContents(span)
+  } catch {
+    /* skip portions crossing element boundaries */
+  }
+}
+
+/** Show a temporary highlight over [start,end] indicating what will be
+ *  highlighted once a colour is chosen. */
+function applyPreview(container: HTMLElement, start: number, end: number) {
+  const s = locate(container, start)
+  const e = locate(container, end)
+  if (!s || !e) return
+  const r = document.createRange()
+  r.setStart(s.node, s.offset)
+  r.setEnd(e.node, e.offset)
+  const nodes = intersectingTextNodes(r)
+  const ops = nodes.map((node) => ({
+    node,
+    start: node === r.startContainer ? r.startOffset : 0,
+    end: node === r.endContainer ? r.endOffset : node.length,
+  }))
+  for (const op of ops) wrapPreviewPortion(op.node, op.start, op.end)
+}
+
+/** Remove any transient preview spans, restoring the original text. */
+function clearPreview(container: HTMLElement) {
+  container.querySelectorAll<HTMLElement>('span.ielts-hl-preview').forEach((span) => {
+    const parent = span.parentNode
+    if (!parent) return
+    while (span.firstChild) parent.insertBefore(span.firstChild, span)
+    parent.removeChild(span)
+    parent.normalize()
+  })
+}
+
 function unwrap(id: string, container: HTMLElement) {
   container.querySelectorAll<HTMLElement>(`span.ielts-hl[data-hl-id="${id}"]`).forEach((span) => {
     const parent = span.parentNode
@@ -157,7 +202,12 @@ export default function Highlighter({ html, passage }: { html: string; passage: 
 
   useEffect(() => {
     const onDocDown = (e: MouseEvent) => {
-      if (!(e.target as HTMLElement).closest('.hl-menu')) setMenu(null)
+      // Clicks on the menu keep the preview alive (a colour may be chosen);
+      // clicking anywhere else dismisses the menu and the temporary highlight.
+      if (!(e.target as HTMLElement).closest('.hl-menu')) {
+        setMenu(null)
+        if (ref.current) clearPreview(ref.current)
+      }
     }
     document.addEventListener('mousedown', onDocDown)
     return () => document.removeEventListener('mousedown', onDocDown)
@@ -180,8 +230,11 @@ export default function Highlighter({ html, passage }: { html: string; passage: 
       const rect = range.getBoundingClientRect()
       // Drop the live selection now that offsets are captured: the native
       // selection paint would otherwise mask existing highlights until an
-      // option is picked. The menu sits anchored above the captured rect.
+      // option is picked. A transient preview span (distinct colour) marks the
+      // text that will be highlighted; it is removed on dismiss or commit.
       sel.removeAllRanges()
+      clearPreview(container)
+      applyPreview(container, start, end)
       setMenu({ x: rect.left + rect.width / 2, y: rect.top - 8, mode: 'select', start, end })
       return
     }
@@ -203,6 +256,7 @@ export default function Highlighter({ html, passage }: { html: string; passage: 
     if (menu?.mode !== 'select' || menu.start == null || menu.end == null) return
     const id = genId()
     window.getSelection()?.removeAllRanges()
+    if (ref.current) clearPreview(ref.current)
     addHighlight({ id, passage, start: menu.start, end: menu.end, color })
     if (withNote) askNote(id)
     setMenu(null)
