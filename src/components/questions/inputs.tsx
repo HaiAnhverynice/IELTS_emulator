@@ -1,5 +1,21 @@
 import { useStore } from '../../store'
+import { useReview } from '../../lib/hooks'
 import type { Option } from '../../types'
+
+/** Format an accepted-answer key value (string or list of variants) for the
+ *  "correct answer" hint shown in review. */
+function fmtKey(k: string | string[] | undefined): string {
+  if (k == null) return '—'
+  return Array.isArray(k) ? k.join(' / ') : k
+}
+
+/** Case/space-insensitive membership test against accepted variants. */
+function isAccepted(v: string, k: string | string[] | undefined): boolean {
+  if (k == null) return false
+  const norm = (s: string) => s.trim().toLowerCase()
+  const variants = Array.isArray(k) ? k : [k]
+  return variants.some((x) => norm(x) === norm(v))
+}
 
 /** Text input for a single-line gap / short answer. Focusing it makes that
  *  question the "current" one so the nav highlight follows the user. */
@@ -7,6 +23,29 @@ export function GapInput({ n, width }: { n: number; width?: string }) {
   const value = useStore((s) => s.answers[n]) as string | undefined
   const setAnswer = useStore((s) => s.setAnswer)
   const goToQuestion = useStore((s) => s.goToQuestion)
+  const review = useReview()
+
+  if (review.reviewMode) {
+    const ok = review.result?.perQuestion[n]
+    return (
+      <span className="inline-flex items-baseline gap-1">
+        <input
+          type="text"
+          readOnly
+          className={`ielts-input ielts-gap ${ok ? 'rev-ok' : 'rev-bad'}`}
+          style={width ? { minWidth: width } : undefined}
+          value={value ?? ''}
+          aria-label={`Answer ${n}`}
+        />
+        {ok ? (
+          <span className="rev-tick">✓</span>
+        ) : (
+          <span className="rev-correct">✗ {fmtKey(review.key?.[n])}</span>
+        )}
+      </span>
+    )
+  }
+
   return (
     <input
       type="text"
@@ -26,26 +65,39 @@ export function RadioGroup({ n, options }: { n: number; options: Option[] }) {
   const value = useStore((s) => s.answers[n]) as string | undefined
   const setAnswer = useStore((s) => s.setAnswer)
   const goToQuestion = useStore((s) => s.goToQuestion)
+  const review = useReview()
+  const correct = review.reviewMode ? review.key?.[n] : undefined
+
   return (
     <div className="flex flex-col gap-1 mt-1">
-      {options.map((o) => (
-        <label key={o.value} className="flex items-start gap-2 cursor-pointer">
-          <input
-            type="radio"
-            name={`q${n}`}
-            className="mt-1"
-            checked={value === o.value}
-            onChange={() => {
-              goToQuestion(n)
-              setAnswer(n, o.value)
-            }}
-          />
-          <span>
-            <span className="font-semibold mr-1">{o.value}</span>
-            {o.label}
-          </span>
-        </label>
-      ))}
+      {options.map((o) => {
+        const isCorrectOpt = review.reviewMode && isAccepted(o.value, correct)
+        const isWrongPick = review.reviewMode && value === o.value && !isCorrectOpt
+        return (
+          <label
+            key={o.value}
+            className={`flex items-start gap-2 ${review.reviewMode ? '' : 'cursor-pointer'}`}
+          >
+            <input
+              type="radio"
+              name={`q${n}`}
+              className="mt-1"
+              checked={value === o.value}
+              disabled={review.reviewMode}
+              onChange={() => {
+                goToQuestion(n)
+                setAnswer(n, o.value)
+              }}
+            />
+            <span className={isCorrectOpt ? 'rev-opt-correct' : isWrongPick ? 'rev-opt-wrong' : ''}>
+              <span className="font-semibold mr-1">{o.value}</span>
+              {o.label}
+              {isCorrectOpt && <span className="rev-tick ml-1">✓</span>}
+              {isWrongPick && <span className="rev-cross ml-1">✗</span>}
+            </span>
+          </label>
+        )
+      })}
     </div>
   )
 }
@@ -90,6 +142,22 @@ export function Dropdown({ n, options }: { n: number; options: Option[] }) {
   const value = useStore((s) => s.answers[n]) as string | undefined
   const setAnswer = useStore((s) => s.setAnswer)
   const goToQuestion = useStore((s) => s.goToQuestion)
+  const review = useReview()
+
+  if (review.reviewMode) {
+    const ok = review.result?.perQuestion[n]
+    return (
+      <span className="inline-flex items-baseline gap-1">
+        <span className={`ielts-input ${ok ? 'rev-ok' : 'rev-bad'}`}>{value || '—'}</span>
+        {ok ? (
+          <span className="rev-tick">✓</span>
+        ) : (
+          <span className="rev-correct">✗ {fmtKey(review.key?.[n])}</span>
+        )}
+      </span>
+    )
+  }
+
   return (
     <select
       className="ielts-input"

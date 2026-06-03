@@ -8,6 +8,7 @@ export default function ListeningTest() {
   const test = useStore((s) => s.test)
   const activeSection = useStore((s) => s.activeSection)
   const navigateTo = useStore((s) => s.navigateTo)
+  const reviewMode = useStore((s) => s.reviewMode)
   usePendingScroll()
 
   const [playingPart, setPlayingPart] = useState(0)
@@ -29,7 +30,7 @@ export default function ListeningTest() {
   return (
     <div className="flex-1 overflow-auto ielts-scroll p-5">
       <div className="max-w-3xl mx-auto ielts-scale">
-        <AudioPlayer key={playingPart} part={parts[playingPart]} onEnded={onPartEnded} />
+        {!reviewMode && <AudioPlayer key={playingPart} part={parts[playingPart]} onEnded={onPartEnded} />}
 
         {active && (
           <>

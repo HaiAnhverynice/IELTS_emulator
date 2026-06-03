@@ -18,6 +18,8 @@ export default function BottomNav({ onSubmit }: { onSubmit: () => void }) {
   const navigateTo = useStore((s) => s.navigateTo)
   const toggleFlag = useStore((s) => s.toggleFlag)
   const setActiveSection = useStore((s) => s.setActiveSection)
+  const reviewMode = useStore((s) => s.reviewMode)
+  const backToResults = useStore((s) => s.backToResults)
 
   if (!test || !module) return null
   const sections = getSections(test, module)
@@ -120,11 +122,11 @@ export default function BottomNav({ onSubmit }: { onSubmit: () => void }) {
 
       <div className="flex items-center gap-2 px-3 border-l" style={{ borderColor: 'var(--ielts-border)' }}>
         <button
-          onClick={onSubmit}
+          onClick={reviewMode ? backToResults : onSubmit}
           className="px-3 py-1 text-sm font-bold border"
           style={{ borderColor: 'var(--ielts-border)' }}
         >
-          Submit
+          {reviewMode ? '← Results' : 'Submit'}
         </button>
         <button
           onClick={goPrev}

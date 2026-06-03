@@ -52,6 +52,7 @@ function ConfirmSubmit({ onCancel, onConfirm }: { onCancel: () => void; onConfir
 export default function TestRunner() {
   const module = useStore((s) => s.module)
   const submit = useStore((s) => s.submit)
+  const reviewMode = useStore((s) => s.reviewMode)
   const [confirm, setConfirm] = useState(false)
 
   const doSubmit = () => {
@@ -63,6 +64,14 @@ export default function TestRunner() {
   return (
     <>
       <TopBar />
+      {reviewMode && (
+        <div
+          className="shrink-0 px-4 py-1.5 text-sm font-bold border-b flex items-center gap-3"
+          style={{ background: 'var(--ielts-panel)', color: 'var(--ielts-panel-fg)', borderColor: 'var(--ielts-border)' }}
+        >
+          <span>Review mode — your answers are marked <span className="rev-tick">✓</span> correct / <span className="rev-cross">✗</span> incorrect, with the right answer shown.</span>
+        </div>
+      )}
       <main className="flex-1 min-h-0 flex flex-col">
         {module === 'reading' && <ReadingTest />}
         {module === 'listening' && <ListeningTest />}

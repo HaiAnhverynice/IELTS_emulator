@@ -1,5 +1,28 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useStore } from '../store'
+import { markTest, type MarkResult } from './scoring'
+import type { AnswerKey } from '../types'
+
+export interface ReviewInfo {
+  reviewMode: boolean
+  result?: MarkResult
+  key?: AnswerKey
+}
+
+/** On-test answer review state (active after Submit → "Review on test").
+ *  Returns the marking result + answer key so inputs can render ✓/✗ inline. */
+export function useReview(): ReviewInfo {
+  const reviewMode = useStore((s) => s.reviewMode)
+  const test = useStore((s) => s.test)
+  const module = useStore((s) => s.module)
+  const answers = useStore((s) => s.answers)
+  return useMemo<ReviewInfo>(() => {
+    if (!reviewMode || !test || !module || module === 'writing') return { reviewMode: false }
+    const result = markTest(test, module, answers)
+    const key = (module === 'listening' ? test.listening?.answerKey : test.reading?.answerKey) ?? {}
+    return { reviewMode: true, result, key }
+  }, [reviewMode, test, module, answers])
+}
 
 /** Ticking countdown derived from an absolute end timestamp. Calls `onExpire`
  *  exactly once when it reaches zero. */

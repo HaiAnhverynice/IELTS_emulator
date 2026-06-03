@@ -150,6 +150,9 @@ export type AnswerValue = string | string[]
 export type Answers = Record<number, AnswerValue>
 export type Flags = Record<number, boolean>
 
+/** Highlighter pen colours offered in the select menu. */
+export type HighlightColor = 'yellow' | 'green' | 'pink'
+
 export interface Highlight {
   id: string
   passage: number
@@ -158,6 +161,8 @@ export interface Highlight {
   start: number
   end: number
   note?: string
+  /** Pen colour; defaults to yellow for highlights saved before colours. */
+  color?: HighlightColor
 }
 
 export interface Settings {

@@ -17,6 +17,10 @@
   --ielts-accent-fg: #ffffff;
   --ielts-flag: #e8a33d;
   --ielts-highlight: #ffe14d;
+  --ielts-hl-yellow: #ffe14d;
+  --ielts-hl-green: #9ae6b4;
+  --ielts-hl-pink: #fbb6ce;
+  --ielts-hl-fg: #000;
   --ielts-link: #1a4fa0;
   --ielts-font-scale: 1;
 }
@@ -30,6 +34,10 @@ html[data-theme="white-on-black"] {
   --ielts-border: #4d4d4d;
   --ielts-accent: #3b82f6;
   --ielts-highlight: #6b5b00;
+  --ielts-hl-yellow: #6b5b00;
+  --ielts-hl-green: #1f5132;
+  --ielts-hl-pink: #6b2747;
+  --ielts-hl-fg: #fff;
   --ielts-link: #7db1ff;
 }
 html[data-theme="yellow-on-black"] {
@@ -41,6 +49,10 @@ html[data-theme="yellow-on-black"] {
   --ielts-accent: #d4af00;
   --ielts-accent-fg: #000000;
   --ielts-highlight: #5c5c00;
+  --ielts-hl-yellow: #5c5c00;
+  --ielts-hl-green: #1f5132;
+  --ielts-hl-pink: #6b2747;
+  --ielts-hl-fg: #fff;
   --ielts-link: #ffff66;
 }
 
@@ -69,12 +81,18 @@ body {
 
 /* Text-selection highlight used by the Reading highlighter */
 .ielts-hl {
-  background: var(--ielts-highlight);
-  color: #000;
+  background: var(--ielts-hl-yellow);
+  color: var(--ielts-hl-fg);
   cursor: pointer;
 }
-html[data-theme="white-on-black"] .ielts-hl,
-html[data-theme="yellow-on-black"] .ielts-hl { color: #fff; }
+.ielts-hl[data-color="green"] { background: var(--ielts-hl-green); }
+.ielts-hl[data-color="pink"] { background: var(--ielts-hl-pink); }
+
+/* While dragging a new selection, keep existing highlights legible: a
+ * translucent selection paint blends over them instead of masking them. */
+.passage ::selection {
+  background: color-mix(in srgb, var(--ielts-accent) 35%, transparent);
+}
 
 /* Inputs styled to match the flat IELTS look */
 .ielts-input {
@@ -94,6 +112,27 @@ html[data-theme="yellow-on-black"] .ielts-hl { color: #fff; }
   display: inline-block;
   min-width: 7.5rem;
 }
+
+/* ---- On-test answer review (after submit) ---- */
+.rev-ok {
+  border-color: #16a34a !important;
+  box-shadow: inset 0 0 0 1px #16a34a;
+}
+.rev-bad {
+  border-color: #dc2626 !important;
+  box-shadow: inset 0 0 0 1px #dc2626;
+  text-decoration: line-through;
+}
+.rev-tick { color: #16a34a; font-weight: 700; }
+.rev-cross { color: #dc2626; font-weight: 700; }
+.rev-correct {
+  color: #16a34a;
+  font-weight: 600;
+  white-space: nowrap;
+}
+/* Highlight the right option in a radio/checkbox list */
+.rev-opt-correct { color: #16a34a; font-weight: 600; }
+.rev-opt-wrong { color: #dc2626; text-decoration: line-through; }
 
 /* Passage paragraph letters */
 .passage-letter {

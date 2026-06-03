@@ -78,6 +78,7 @@ export default function Results() {
   const test = useStore((s) => s.test)
   const module = useStore((s) => s.module)
   const answers = useStore((s) => s.answers)
+  const reviewOnTest = useStore((s) => s.reviewOnTest)
 
   if (!test || !module) return null
   if (module === 'writing') return <WritingResults />
@@ -113,9 +114,18 @@ export default function Results() {
               <div className="text-sm opacity-70 mt-1">Correct answers</div>
             </div>
           </div>
-          <p className="text-xs opacity-60 mb-5">
-            Band is a published approximation of the raw-score conversion and is indicative only.
-          </p>
+          <div className="flex items-center justify-between gap-3 mb-5 flex-wrap">
+            <p className="text-xs opacity-60">
+              Band is a published approximation of the raw-score conversion and is indicative only.
+            </p>
+            <button
+              onClick={reviewOnTest}
+              className="px-4 py-1.5 text-sm font-bold border shrink-0"
+              style={{ borderColor: 'var(--ielts-border)', background: 'var(--ielts-accent)', color: 'var(--ielts-accent-fg)' }}
+            >
+              Check answers on the test →
+            </button>
+          </div>
 
           {/* Per-question review, grouped by part/passage */}
           {moduleSections.map((sec, si) => {

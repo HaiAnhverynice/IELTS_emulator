@@ -4,6 +4,7 @@ import type {
   AnswerValue,
   Flags,
   Highlight,
+  HighlightColor,
   IeltsTest,
   ModuleType,
   Settings,
@@ -55,6 +56,8 @@ interface RunState {
   highlights: Highlight[]
   endsAt: number | null
   submitted: boolean
+  /** After submitting, re-enter the test read-only to review correct answers. */
+  reviewMode: boolean
   settings: Settings
   /** Listening audio volume, 0..1. */
   volume: number
@@ -75,7 +78,12 @@ interface RunState {
   addHighlight: (h: Highlight) => void
   removeHighlight: (id: string) => void
   setHighlightNote: (id: string, note: string) => void
+  setHighlightColor: (id: string, color: HighlightColor) => void
   submit: () => void
+  /** Switch from the results scoreboard into on-test answer review. */
+  reviewOnTest: () => void
+  /** Leave on-test review and return to the scoreboard. */
+  backToResults: () => void
   exitToHome: () => void
   updateSettings: (partial: Partial<Settings>) => void
   setVolume: (v: number) => void
@@ -122,6 +130,7 @@ export const useStore = create<RunState>((set, get) => ({
   highlights: [],
   endsAt: null,
   submitted: false,
+  reviewMode: false,
   settings: loadSettings(),
   volume: 1,
 
@@ -146,6 +155,7 @@ export const useStore = create<RunState>((set, get) => ({
       highlights: [],
       endsAt: Date.now() + dur * 1000,
       submitted: false,
+      reviewMode: false,
     })
   },
 
@@ -163,6 +173,7 @@ export const useStore = create<RunState>((set, get) => ({
       highlights: saved.highlights ?? [],
       endsAt: saved.endsAt,
       submitted: false,
+      reviewMode: false,
     })
   },
 
@@ -212,10 +223,19 @@ export const useStore = create<RunState>((set, get) => ({
       highlights: s.highlights.map((h) => (h.id === id ? { ...h, note } : h)),
     })),
 
+  setHighlightColor: (id, color) =>
+    set((s) => ({
+      highlights: s.highlights.map((h) => (h.id === id ? { ...h, color } : h)),
+    })),
+
   submit: () => {
     clearSession()
-    set({ submitted: true, view: 'results' })
+    set({ submitted: true, view: 'results', reviewMode: false })
   },
+
+  reviewOnTest: () => set({ view: 'running', reviewMode: true }),
+
+  backToResults: () => set({ view: 'results', reviewMode: false }),
 
   exitToHome: () => {
     clearSession()
@@ -224,6 +244,7 @@ export const useStore = create<RunState>((set, get) => ({
       test: null,
       module: null,
       submitted: false,
+      reviewMode: false,
       endsAt: null,
     })
   },

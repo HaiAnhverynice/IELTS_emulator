@@ -1,5 +1,6 @@
 import { useMemo, type ReactNode } from 'react'
 import { useStore } from '../../store'
+import { useReview } from '../../lib/hooks'
 import type { Option, QuestionGroup } from '../../types'
 import { htmlToReact } from '../../lib/htmlToReact'
 import { asset } from '../../lib/asset'
@@ -77,6 +78,7 @@ function MultiSelect({ group }: { group: QuestionGroup }) {
   const value = (useStore((s) => s.answers[nums[0]]) as string[] | undefined) ?? []
   const setAnswerMany = useStore((s) => s.setAnswerMany)
   const goToQuestion = useStore((s) => s.goToQuestion)
+  const review = useReview()
   const max = nums.length
   const options = group.options ?? []
 
@@ -86,26 +88,57 @@ function MultiSelect({ group }: { group: QuestionGroup }) {
     else if (value.length < max) setAnswerMany(nums, [...value, v])
   }
 
+  // Correct letters for this group = the union of accepted answers across its
+  // question numbers (the key stores them per number).
+  const correctSet = new Set(
+    review.reviewMode
+      ? nums.flatMap((n) => {
+          const k = review.key?.[n]
+          return (Array.isArray(k) ? k : k ? [k] : []).map((x) => String(x).trim().toUpperCase())
+        })
+      : [],
+  )
+  const gotCount = nums.reduce((acc, n) => acc + (review.result?.perQuestion[n] ? 1 : 0), 0)
+
   return (
     <div>
       <div className="flex flex-col gap-1">
         {options.map((o) => {
           const checked = value.includes(o.value)
           const atLimit = !checked && value.length >= max
+          const isCorrectOpt = review.reviewMode && correctSet.has(o.value.trim().toUpperCase())
+          const isWrongPick = review.reviewMode && checked && !isCorrectOpt
           return (
-            <label key={o.value} className={`flex items-start gap-2 ${atLimit ? 'opacity-40' : 'cursor-pointer'}`}>
-              <input type="checkbox" className="mt-1" checked={checked} disabled={atLimit} onChange={() => toggle(o.value)} />
-              <span>
+            <label
+              key={o.value}
+              className={`flex items-start gap-2 ${review.reviewMode ? '' : atLimit ? 'opacity-40' : 'cursor-pointer'}`}
+            >
+              <input
+                type="checkbox"
+                className="mt-1"
+                checked={checked}
+                disabled={review.reviewMode || atLimit}
+                onChange={() => toggle(o.value)}
+              />
+              <span className={isCorrectOpt ? 'rev-opt-correct' : isWrongPick ? 'rev-opt-wrong' : ''}>
                 <span className="font-semibold mr-1">{o.value}</span>
                 {o.label}
+                {isCorrectOpt && <span className="rev-tick ml-1">✓</span>}
+                {isWrongPick && <span className="rev-cross ml-1">✗</span>}
               </span>
             </label>
           )
         })}
       </div>
-      <div className="text-xs opacity-60 mt-1">
-        {value.length} of {max} selected
-      </div>
+      {review.reviewMode ? (
+        <div className="text-xs mt-1 font-semibold">
+          {gotCount} of {max} marks
+        </div>
+      ) : (
+        <div className="text-xs opacity-60 mt-1">
+          {value.length} of {max} selected
+        </div>
+      )}
     </div>
   )
 }

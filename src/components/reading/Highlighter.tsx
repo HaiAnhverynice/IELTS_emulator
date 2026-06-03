@@ -1,5 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { useStore } from '../../store'
+import type { HighlightColor } from '../../types'
+
+const COLORS: { key: HighlightColor; swatch: string; label: string }[] = [
+  { key: 'yellow', swatch: '#ffe14d', label: 'Yellow' },
+  { key: 'green', swatch: '#9ae6b4', label: 'Green' },
+  { key: 'pink', swatch: '#fbb6ce', label: 'Pink' },
+]
 
 function genId(): string {
   return crypto.randomUUID?.() ?? `hl-${Date.now()}-${Math.random().toString(36).slice(2)}`
@@ -42,7 +49,7 @@ function intersectingTextNodes(range: Range): Text[] {
   return out
 }
 
-function wrapPortion(node: Text, start: number, end: number, id: string, note?: string) {
+function wrapPortion(node: Text, start: number, end: number, id: string, note?: string, color?: HighlightColor) {
   if (end <= start) return
   const r = document.createRange()
   r.setStart(node, start)
@@ -50,6 +57,7 @@ function wrapPortion(node: Text, start: number, end: number, id: string, note?: 
   const span = document.createElement('span')
   span.className = 'ielts-hl'
   span.dataset.hlId = id
+  span.dataset.color = color ?? 'yellow'
   if (note) {
     span.title = note
     span.dataset.note = note
@@ -62,14 +70,20 @@ function wrapPortion(node: Text, start: number, end: number, id: string, note?: 
   }
 }
 
-function wrapRange(range: Range, id: string, note?: string) {
+function wrapRange(range: Range, id: string, note?: string, color?: HighlightColor) {
   const nodes = intersectingTextNodes(range)
   const ops = nodes.map((node) => ({
     node,
     start: node === range.startContainer ? range.startOffset : 0,
     end: node === range.endContainer ? range.endOffset : node.length,
   }))
-  for (const op of ops) wrapPortion(op.node, op.start, op.end, id, note)
+  for (const op of ops) wrapPortion(op.node, op.start, op.end, id, note, color)
+}
+
+function setColorOnSpans(id: string, color: HighlightColor, container: HTMLElement) {
+  container.querySelectorAll<HTMLElement>(`span.ielts-hl[data-hl-id="${id}"]`).forEach((span) => {
+    span.dataset.color = color
+  })
 }
 
 function unwrap(id: string, container: HTMLElement) {
@@ -108,6 +122,7 @@ export default function Highlighter({ html, passage }: { html: string; passage: 
   const addHighlight = useStore((s) => s.addHighlight)
   const removeHighlight = useStore((s) => s.removeHighlight)
   const setHighlightNote = useStore((s) => s.setHighlightNote)
+  const setHighlightColor = useStore((s) => s.setHighlightColor)
 
   // Reconcile the DOM highlights for this passage to match the store. This
   // single effect covers creation, removal, note edits, and restoring saved
@@ -127,6 +142,7 @@ export default function Highlighter({ html, passage }: { html: string; passage: 
     for (const h of mine) {
       if (container.querySelector(`span.ielts-hl[data-hl-id="${h.id}"]`)) {
         setNoteOnSpans(h.id, h.note ?? '', container)
+        setColorOnSpans(h.id, h.color ?? 'yellow', container)
         continue
       }
       const s = locate(container, h.start)
@@ -135,7 +151,7 @@ export default function Highlighter({ html, passage }: { html: string; passage: 
       const r = document.createRange()
       r.setStart(s.node, s.offset)
       r.setEnd(e.node, e.offset)
-      wrapRange(r, h.id, h.note)
+      wrapRange(r, h.id, h.note, h.color)
     }
   }, [highlights, passage])
 
@@ -162,6 +178,10 @@ export default function Highlighter({ html, passage }: { html: string; passage: 
         return
       }
       const rect = range.getBoundingClientRect()
+      // Drop the live selection now that offsets are captured: the native
+      // selection paint would otherwise mask existing highlights until an
+      // option is picked. The menu sits anchored above the captured rect.
+      sel.removeAllRanges()
       setMenu({ x: rect.left + rect.width / 2, y: rect.top - 8, mode: 'select', start, end })
       return
     }
@@ -179,11 +199,11 @@ export default function Highlighter({ html, passage }: { html: string; passage: 
     setHighlightNote(id, note)
   }
 
-  const doHighlight = (withNote: boolean) => {
+  const doHighlight = (color: HighlightColor, withNote: boolean) => {
     if (menu?.mode !== 'select' || menu.start == null || menu.end == null) return
     const id = genId()
     window.getSelection()?.removeAllRanges()
-    addHighlight({ id, passage, start: menu.start, end: menu.end })
+    addHighlight({ id, passage, start: menu.start, end: menu.end, color })
     if (withNote) askNote(id)
     setMenu(null)
   }
@@ -214,19 +234,54 @@ export default function Highlighter({ html, passage }: { html: string; passage: 
         >
           {menu.mode === 'select' ? (
             <>
-              <button className="px-3 py-1 hover:opacity-70" onClick={() => doHighlight(false)}>
-                Highlight
-              </button>
-              <button className="px-3 py-1 border-l hover:opacity-70" style={{ borderColor: 'var(--ielts-border)' }} onClick={() => doHighlight(true)}>
-                Highlight + Note
+              {COLORS.map((c) => (
+                <button
+                  key={c.key}
+                  className="px-2 py-1 hover:opacity-70"
+                  title={`Highlight ${c.label}`}
+                  onClick={() => doHighlight(c.key, false)}
+                >
+                  <span
+                    className="inline-block w-4 h-4 rounded-sm border align-middle"
+                    style={{ background: c.swatch, borderColor: 'var(--ielts-border)' }}
+                  />
+                </button>
+              ))}
+              <button
+                className="px-3 py-1 border-l hover:opacity-70"
+                style={{ borderColor: 'var(--ielts-border)' }}
+                onClick={() => doHighlight('yellow', true)}
+              >
+                + Note
               </button>
             </>
           ) : (
             <>
-              <button className="px-3 py-1 hover:opacity-70" onClick={() => menu.id && askNote(menu.id)}>
+              {COLORS.map((c) => (
+                <button
+                  key={c.key}
+                  className="px-2 py-1 hover:opacity-70"
+                  title={`Recolour ${c.label}`}
+                  onClick={() => menu.id && setHighlightColor(menu.id, c.key)}
+                >
+                  <span
+                    className="inline-block w-4 h-4 rounded-sm border align-middle"
+                    style={{ background: c.swatch, borderColor: 'var(--ielts-border)' }}
+                  />
+                </button>
+              ))}
+              <button
+                className="px-3 py-1 border-l hover:opacity-70"
+                style={{ borderColor: 'var(--ielts-border)' }}
+                onClick={() => menu.id && askNote(menu.id)}
+              >
                 Note
               </button>
-              <button className="px-3 py-1 border-l hover:opacity-70" style={{ borderColor: 'var(--ielts-border)' }} onClick={() => menu.id && doRemove(menu.id)}>
+              <button
+                className="px-3 py-1 border-l hover:opacity-70"
+                style={{ borderColor: 'var(--ielts-border)' }}
+                onClick={() => menu.id && doRemove(menu.id)}
+              >
                 Clear
               </button>
             </>
