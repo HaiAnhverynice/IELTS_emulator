@@ -58,6 +58,9 @@ interface RunState {
   submitted: boolean
   /** After submitting, re-enter the test read-only to review correct answers. */
   reviewMode: boolean
+  /** Review only: the passage sentence to flash-highlight when a question's
+   *  "In passage" affordance is clicked. Cleared on navigation away. */
+  evidence: { passage: number; text: string } | null
   settings: Settings
   /** Listening audio volume, 0..1. */
   volume: number
@@ -80,6 +83,10 @@ interface RunState {
   setHighlightNote: (id: string, note: string) => void
   setHighlightColor: (id: string, color: HighlightColor) => void
   submit: () => void
+  /** Review only: scroll to and highlight the passage text that justifies a
+   *  question's answer. No-op if the question has no `evidence`. */
+  revealEvidenceFor: (n: number) => void
+  clearEvidence: () => void
   /** Switch from the results scoreboard into on-test answer review. */
   reviewOnTest: () => void
   /** Leave on-test review and return to the scoreboard. */
@@ -131,6 +138,7 @@ export const useStore = create<RunState>((set, get) => ({
   endsAt: null,
   submitted: false,
   reviewMode: false,
+  evidence: null,
   settings: loadSettings(),
   volume: 1,
 
@@ -156,6 +164,7 @@ export const useStore = create<RunState>((set, get) => ({
       endsAt: Date.now() + dur * 1000,
       submitted: false,
       reviewMode: false,
+      evidence: null,
     })
   },
 
@@ -174,6 +183,7 @@ export const useStore = create<RunState>((set, get) => ({
       endsAt: saved.endsAt,
       submitted: false,
       reviewMode: false,
+      evidence: null,
     })
   },
 
@@ -203,10 +213,32 @@ export const useStore = create<RunState>((set, get) => ({
       currentQuestion: n,
       activeSection: sectionForQuestion(test, module, n),
       pendingScroll: n,
+      evidence: null,
     })
   },
 
   consumeScroll: () => set({ pendingScroll: null }),
+
+  revealEvidenceFor: (n) => {
+    const { test, module } = get()
+    if (!test || module !== 'reading' || !test.reading) return
+    const passages = test.reading.passages
+    for (let idx = 0; idx < passages.length; idx++) {
+      for (const g of passages[idx].groups) {
+        const q = g.questions.find((qq) => qq.number === n)
+        if (!q) continue
+        if (!q.evidence) return
+        set({
+          activeSection: idx,
+          currentQuestion: n,
+          evidence: { passage: passages[idx].number, text: q.evidence },
+        })
+        return
+      }
+    }
+  },
+
+  clearEvidence: () => set({ evidence: null }),
 
   setActiveSection: (i) => set({ activeSection: i }),
 
@@ -246,12 +278,12 @@ export const useStore = create<RunState>((set, get) => ({
 
   submit: () => {
     clearSession()
-    set({ submitted: true, view: 'results', reviewMode: false })
+    set({ submitted: true, view: 'results', reviewMode: false, evidence: null })
   },
 
-  reviewOnTest: () => set({ view: 'running', reviewMode: true }),
+  reviewOnTest: () => set({ view: 'running', reviewMode: true, evidence: null }),
 
-  backToResults: () => set({ view: 'results', reviewMode: false }),
+  backToResults: () => set({ view: 'results', reviewMode: false, evidence: null }),
 
   exitToHome: () => {
     clearSession()
@@ -261,6 +293,7 @@ export const useStore = create<RunState>((set, get) => ({
       module: null,
       submitted: false,
       reviewMode: false,
+      evidence: null,
       endsAt: null,
     })
   },

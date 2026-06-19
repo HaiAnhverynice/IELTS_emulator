@@ -132,6 +132,56 @@ function clearPreview(container: HTMLElement) {
   })
 }
 
+/** Wrap one text-node portion in an evidence span (distinct class, no hl-id) so
+ *  it is never confused with a committed highlight. Returns the span. */
+function wrapEvidencePortion(node: Text, start: number, end: number): HTMLElement | null {
+  if (end <= start) return null
+  const r = document.createRange()
+  r.setStart(node, start)
+  r.setEnd(node, end)
+  const span = document.createElement('span')
+  span.className = 'ielts-evidence'
+  try {
+    r.surroundContents(span)
+    return span
+  } catch {
+    return null
+  }
+}
+
+/** Paint an evidence highlight over [start,end] and return its first span. */
+function applyEvidence(container: HTMLElement, start: number, end: number): HTMLElement | null {
+  const s = locate(container, start)
+  const e = locate(container, end)
+  if (!s || !e) return null
+  const r = document.createRange()
+  r.setStart(s.node, s.offset)
+  r.setEnd(e.node, e.offset)
+  const nodes = intersectingTextNodes(r)
+  const ops = nodes.map((node) => ({
+    node,
+    start: node === r.startContainer ? r.startOffset : 0,
+    end: node === r.endContainer ? r.endOffset : node.length,
+  }))
+  let first: HTMLElement | null = null
+  for (const op of ops) {
+    const span = wrapEvidencePortion(op.node, op.start, op.end)
+    if (span && !first) first = span
+  }
+  return first
+}
+
+/** Remove all evidence spans, restoring the original text. */
+function clearEvidenceSpans(container: HTMLElement) {
+  container.querySelectorAll<HTMLElement>('span.ielts-evidence').forEach((span) => {
+    const parent = span.parentNode
+    if (!parent) return
+    while (span.firstChild) parent.insertBefore(span.firstChild, span)
+    parent.removeChild(span)
+    parent.normalize()
+  })
+}
+
 function unwrap(id: string, container: HTMLElement) {
   container.querySelectorAll<HTMLElement>(`span.ielts-hl[data-hl-id="${id}"]`).forEach((span) => {
     const parent = span.parentNode
@@ -196,6 +246,7 @@ export default function Highlighter({ html, passage }: { html: string; passage: 
   const removeHighlight = useStore((s) => s.removeHighlight)
   const setHighlightNote = useStore((s) => s.setHighlightNote)
   const setHighlightColor = useStore((s) => s.setHighlightColor)
+  const evidence = useStore((s) => s.evidence)
 
   // Reconcile the DOM highlights for this passage to match the store. This
   // single effect covers creation, removal, note edits, and restoring saved
@@ -227,6 +278,23 @@ export default function Highlighter({ html, passage }: { html: string; passage: 
       wrapRange(r, h.id, h.note, h.color)
     }
   }, [highlights, passage])
+
+  // Flash-highlight the passage sentence that justifies a question's answer
+  // (review mode). Cleared and repainted whenever the target changes; only the
+  // passage that owns the evidence reacts. Depends only on [evidence, passage]
+  // so adding/removing user highlights never re-scrolls the page.
+  useEffect(() => {
+    const container = ref.current
+    if (!container) return
+    clearEvidenceSpans(container)
+    if (!evidence || evidence.passage !== passage) return
+    const full = container.textContent ?? ''
+    const i = full.indexOf(evidence.text)
+    if (i < 0) return
+    const span = applyEvidence(container, i, i + evidence.text.length)
+    span?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    return () => clearEvidenceSpans(container)
+  }, [evidence, passage])
 
   useEffect(() => {
     const onDocDown = (e: MouseEvent) => {

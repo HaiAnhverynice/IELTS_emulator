@@ -17,6 +17,23 @@ function isAccepted(v: string, k: string | string[] | undefined): boolean {
   return variants.some((x) => norm(x) === norm(v))
 }
 
+/** Review-mode affordance: jump to and flash the passage text that justifies
+ *  this question's answer. Rendered only when the question has `evidence`. */
+export function EvidenceButton({ n }: { n: number }) {
+  const reveal = useStore((s) => s.revealEvidenceFor)
+  return (
+    <button
+      type="button"
+      onClick={() => reveal(n)}
+      className="text-xs underline opacity-70 hover:opacity-100 cursor-pointer"
+      title="Show the supporting text in the passage"
+      aria-label={`Show the supporting text for question ${n} in the passage`}
+    >
+      🔍 Show in passage
+    </button>
+  )
+}
+
 /** Text input for a single-line gap / short answer. Focusing it makes that
  *  question the "current" one so the nav highlight follows the user. */
 export function GapInput({ n, width }: { n: number; width?: string }) {

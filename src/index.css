@@ -102,6 +102,20 @@ body {
   border-radius: 2px;
 }
 
+/* Evidence flash: the passage sentence that justifies an answer, shown when a
+ * question's "In passage" affordance is clicked in review mode. Accent-tinted
+ * with a ring so it stands apart from the user's own (yellow/green/pink) pens. */
+.ielts-evidence {
+  background: color-mix(in srgb, var(--ielts-accent) 28%, transparent);
+  outline: 2px solid var(--ielts-accent);
+  border-radius: 2px;
+  animation: ielts-evidence-flash 1s ease-out 1;
+}
+@keyframes ielts-evidence-flash {
+  0% { background: color-mix(in srgb, var(--ielts-accent) 70%, transparent); }
+  100% { background: color-mix(in srgb, var(--ielts-accent) 28%, transparent); }
+}
+
 /* During the drag itself (before the menu opens) the native selection paint is
  * translucent so existing highlights still show through instead of being
  * masked. */

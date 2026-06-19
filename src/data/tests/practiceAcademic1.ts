@@ -450,11 +450,11 @@ export const practiceAcademic1: IeltsTest = {
             instructions:
               'Do the following statements agree with the information in Reading Passage 1? Choose TRUE if the statement agrees, FALSE if it contradicts, or NOT GIVEN if there is no information.',
             questions: [
-              { number: 1, text: 'The earliest umbrellas were used mainly for protection from the sun.' },
-              { number: 2, text: 'Umbrellas were first made waterproof in China.' },
-              { number: 3, text: 'Jonas Hanway was the first person to manufacture umbrellas in large numbers.' },
-              { number: 4, text: 'Hanway carried an umbrella in public for more than twenty years.' },
-              { number: 5, text: "Samuel Fox's frame was made of whalebone." },
+              { number: 1, text: 'The earliest umbrellas were used mainly for protection from the sun.', evidence: 'The earliest examples appear in the art of ancient Egypt, Assyria and China, where they were used not against the rain but against the sun.' },
+              { number: 2, text: 'Umbrellas were first made waterproof in China.', evidence: 'It was in China that the umbrella was first made waterproof.' },
+              { number: 3, text: 'Jonas Hanway was the first person to manufacture umbrellas in large numbers.', evidence: 'The traveller and writer Jonas Hanway is usually credited with making the umbrella acceptable for men' },
+              { number: 4, text: 'Hanway carried an umbrella in public for more than twenty years.', evidence: 'he carried one in public for some thirty years, until his death in 1786' },
+              { number: 5, text: "Samuel Fox's frame was made of whalebone.", evidence: 'In 1852 Samuel Fox patented a lightweight steel frame that replaced the heavy whalebone ribs used until then.' },
               { number: 6, text: 'Modern nylon umbrellas are more popular than folding umbrellas.' },
             ],
           },
@@ -469,7 +469,12 @@ export const practiceAcademic1: IeltsTest = {
               {{8}}. In Europe the umbrella was for a long time considered suitable only for
               {{9}}. The mockery that Jonas Hanway received came mainly from {{10}}, who worried about
               their trade in wet weather.</p>`,
-            questions: [{ number: 7 }, { number: 8 }, { number: 9 }, { number: 10 }],
+            questions: [
+              { number: 7, evidence: 'The earliest examples appear in the art of ancient Egypt, Assyria and China' },
+              { number: 8, evidence: 'Craftsmen coated paper canopies with wax and lacquer so that they would shed water.' },
+              { number: 9, evidence: 'In Europe the umbrella was at first regarded as an item for women only.' },
+              { number: 10, evidence: 'enduring the mockery of coachmen, who feared losing business on rainy days.' },
+            ],
           },
           {
             id: 'r1c',
@@ -477,9 +482,9 @@ export const practiceAcademic1: IeltsTest = {
             instructions: 'Answer the questions below.',
             wordLimit: 'Choose NO MORE THAN THREE WORDS AND/OR A NUMBER from the passage for each answer.',
             questions: [
-              { number: 11, text: 'In which year did Samuel Fox patent his frame?' },
-              { number: 12, text: 'Which heavy material was used for umbrella ribs before steel?' },
-              { number: 13, text: 'Which two modern materials have made umbrellas lighter and stronger?' },
+              { number: 11, text: 'In which year did Samuel Fox patent his frame?', evidence: 'In 1852 Samuel Fox patented a lightweight steel frame' },
+              { number: 12, text: 'Which heavy material was used for umbrella ribs before steel?', evidence: 'replaced the heavy whalebone ribs used until then' },
+              { number: 13, text: 'Which two modern materials have made umbrellas lighter and stronger?', evidence: 'new materials such as nylon and fibreglass have made umbrellas lighter and stronger' },
             ],
           },
         ],
@@ -503,12 +508,12 @@ export const practiceAcademic1: IeltsTest = {
               'Reading Passage 2 has six paragraphs, A–F. Choose the correct heading for each paragraph from the list of headings.',
             options: headingOptions,
             questions: [
-              { number: 14, text: 'Paragraph A' },
-              { number: 15, text: 'Paragraph B' },
-              { number: 16, text: 'Paragraph C' },
-              { number: 17, text: 'Paragraph D' },
-              { number: 18, text: 'Paragraph E' },
-              { number: 19, text: 'Paragraph F' },
+              { number: 14, text: 'Paragraph A', evidence: "For the first time in history, more than half the world's people live in cities, and the proportion is rising fast." },
+              { number: 15, text: 'Paragraph B', evidence: 'people who can see or walk among trees report lower levels of stress, and recover faster from illness' },
+              { number: 16, text: 'Paragraph C', evidence: 'Green space also has measurable economic value.' },
+              { number: 17, text: 'Paragraph D', evidence: 'The environmental functions of urban greenery are perhaps the most important of all.' },
+              { number: 18, text: 'Paragraph E', evidence: 'Yet access to these benefits is far from equal.' },
+              { number: 19, text: 'Paragraph F', evidence: 'What might the green city of the future look like?' },
             ],
           },
           {
@@ -518,10 +523,10 @@ export const practiceAcademic1: IeltsTest = {
               'Match each description with the correct city, A–D. You may use any letter more than once.',
             options: cityOptions,
             questions: [
-              { number: 20, text: 'requires new buildings to replace lost greenery higher up' },
-              { number: 21, text: 'supports community gardens on unused land' },
-              { number: 22, text: "linked street trees to residents' health" },
-              { number: 23, text: 'has given individual trees their own identities' },
+              { number: 20, text: 'requires new buildings to replace lost greenery higher up', evidence: 'In Singapore, planners now require new buildings to replace any greenery lost at ground level with planting on roofs and walls.' },
+              { number: 21, text: 'supports community gardens on unused land', evidence: 'Berlin, for instance, funds community gardens on disused land, partly to revive struggling districts.' },
+              { number: 22, text: "linked street trees to residents' health", evidence: 'A study in Toronto found that residents of tree-lined streets reported better physical health than those living on bare ones' },
+              { number: 23, text: 'has given individual trees their own identities', evidence: 'Melbourne has even given individual trees their own identities, mapping and naming them' },
             ],
           },
           {
@@ -532,6 +537,7 @@ export const practiceAcademic1: IeltsTest = {
               {
                 number: 24,
                 text: 'According to the passage, the most important benefit of urban greenery is',
+                evidence: 'The environmental functions of urban greenery are perhaps the most important of all.',
                 options: [
                   { value: 'A', label: 'its economic value.' },
                   { value: 'B', label: 'its environmental function.' },
@@ -541,6 +547,7 @@ export const practiceAcademic1: IeltsTest = {
               {
                 number: 25,
                 text: 'The passage states that the poorest neighbourhoods generally have',
+                evidence: 'the poorest neighbourhoods have the least green space, the fewest trees and the smallest parks',
                 options: [
                   { value: 'A', label: 'newer parks.' },
                   { value: 'B', label: 'less green space.' },
@@ -550,6 +557,7 @@ export const practiceAcademic1: IeltsTest = {
               {
                 number: 26,
                 text: 'The writer concludes that, in future cities, greenery will',
+                evidence: 'greenery is moving from the edges of the city to its very centre',
                 options: [
                   { value: 'A', label: 'disappear from the centre.' },
                   { value: 'B', label: 'become more central.' },
@@ -577,10 +585,10 @@ export const practiceAcademic1: IeltsTest = {
             instructions:
               "Do the following statements agree with the claims of the writer? Choose YES, NO, or NOT GIVEN.",
             questions: [
-              { number: 27, text: 'Sleep plays an active role in forming memories.' },
-              { number: 28, text: 'All types of memory are strengthened during the same stage of sleep.' },
-              { number: 29, text: 'A short nap can improve learning.' },
-              { number: 30, text: 'Naps can fully replace a night of sleep for students.' },
+              { number: 27, text: 'Sleep plays an active role in forming memories.', evidence: 'We now know that sleep is an active process, and that one of its central jobs is to consolidate memory' },
+              { number: 28, text: 'All types of memory are strengthened during the same stage of sleep.', evidence: 'Sleep unfolds in cycles, and different stages serve different kinds of memory.' },
+              { number: 29, text: 'A short nap can improve learning.', evidence: 'a brief nap taken soon after studying can improve later recall' },
+              { number: 30, text: 'Naps can fully replace a night of sleep for students.', evidence: 'Naps, however, are a useful supplement; they cannot substitute for a full night\'s sleep.' },
               { number: 31, text: 'Sleeping pills improve memory consolidation.' },
             ],
           },
@@ -592,6 +600,7 @@ export const practiceAcademic1: IeltsTest = {
               {
                 number: 32,
                 text: 'Slow-wave sleep is most important for memory of',
+                evidence: 'This stage is especially important for memory of facts and events.',
                 options: [
                   { value: 'A', label: 'emotions.' },
                   { value: 'B', label: 'facts and events.' },
@@ -601,6 +610,7 @@ export const practiceAcademic1: IeltsTest = {
               {
                 number: 33,
                 text: 'REM sleep is associated with',
+                evidence: 'it is linked to emotional memory and to the procedural memory that underlies newly learned skills',
                 options: [
                   { value: 'A', label: 'factual recall only.' },
                   { value: 'B', label: 'emotional and procedural memory.' },
@@ -610,6 +620,7 @@ export const practiceAcademic1: IeltsTest = {
               {
                 number: 34,
                 text: 'In the word-pair experiment, the group that slept',
+                evidence: 'the group that had slept recalled markedly more word pairs than the group that had not',
                 options: [
                   { value: 'A', label: 'forgot more pairs.' },
                   { value: 'B', label: 'recalled more pairs.' },
@@ -619,6 +630,7 @@ export const practiceAcademic1: IeltsTest = {
               {
                 number: 35,
                 text: 'Sleep deprivation mainly damages',
+                evidence: 'its main damage is to the forming of new memories',
                 options: [
                   { value: 'A', label: 'memories that are already stored.' },
                   { value: 'B', label: 'the forming of new memories.' },
@@ -637,7 +649,13 @@ export const practiceAcademic1: IeltsTest = {
               the hippocampus to the {{37}} for long-term storage. {{38}} sleep, when most dreaming occurs,
               helps to process {{39}} memories and newly learned skills. Researchers also found that a short
               {{40}} taken soon after studying improved later recall.</p>`,
-            questions: [{ number: 36 }, { number: 37 }, { number: 38 }, { number: 39 }, { number: 40 }],
+            questions: [
+              { number: 36, evidence: "During deep, slow-wave sleep, the brain appears to replay the day's events" },
+              { number: 37, evidence: 'transferring them from the hippocampus, a temporary store, to the cortex' },
+              { number: 38, evidence: 'Rapid-eye-movement, or REM, sleep, when most dreaming occurs' },
+              { number: 39, evidence: 'it is linked to emotional memory and to the procedural memory' },
+              { number: 40, evidence: 'a brief nap taken soon after studying can improve later recall' },
+            ],
           },
         ],
       },

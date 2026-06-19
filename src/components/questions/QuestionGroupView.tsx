@@ -4,7 +4,7 @@ import { useReview } from '../../lib/hooks'
 import type { Option, QuestionGroup } from '../../types'
 import { htmlToReact } from '../../lib/htmlToReact'
 import { asset } from '../../lib/asset'
-import { Dropdown, GapInput, RadioGroup } from './inputs'
+import { Dropdown, EvidenceButton, GapInput, RadioGroup } from './inputs'
 import QuestionShell from './QuestionShell'
 
 const TFNG: Option[] = [
@@ -57,16 +57,25 @@ function OptionBank({ title, options }: { title: string; options: Option[] }) {
 
 /** Renders bodyHtml where `{{n}}` placeholders become numbered input boxes,
  *  parsing the HTML into a React tree so arbitrary structure (notes, forms,
- *  tables, flow-charts) is preserved and the inputs are fully React-managed. */
-function InlineGapBody({ html }: { html: string }) {
+ *  tables, flow-charts) is preserved and the inputs are fully React-managed.
+ *  In review mode, gaps whose question carries `evidence` also get a "Show in
+ *  passage" affordance. */
+function InlineGapBody({ group }: { group: QuestionGroup }) {
+  const review = useReview()
+  const evMap = useMemo(() => {
+    const m: Record<number, string> = {}
+    for (const q of group.questions) if (q.evidence) m[q.number] = q.evidence
+    return m
+  }, [group])
   const tree = useMemo(
     () =>
-      htmlToReact(html, (n) => (
-        <span id={`q${n}`} className="scroll-mt-4 inline-flex items-baseline">
+      htmlToReact(group.bodyHtml ?? '', (n) => (
+        <span id={`q${n}`} className="scroll-mt-4 inline-flex items-baseline gap-1">
           <GapInput n={n} width="6rem" />
+          {review.reviewMode && evMap[n] && <EvidenceButton n={n} />}
         </span>
       )),
-    [html],
+    [group, review.reviewMode, evMap],
   )
   return <div className="inline-gap-body">{tree}</div>
 }
@@ -179,7 +188,7 @@ function GroupBody({ group }: { group: QuestionGroup }) {
       return (
         <>
           {group.questions.map((q) => (
-            <QuestionShell key={q.number} n={q.number}>
+            <QuestionShell key={q.number} n={q.number} evidence={q.evidence}>
               <div>{q.text}</div>
               <RadioGroup n={q.number} options={q.options ?? []} />
             </QuestionShell>
@@ -200,7 +209,7 @@ function GroupBody({ group }: { group: QuestionGroup }) {
       return (
         <>
           {group.questions.map((q) => (
-            <QuestionShell key={q.number} n={q.number}>
+            <QuestionShell key={q.number} n={q.number} evidence={q.evidence}>
               <div>{q.text}</div>
               <RadioGroup n={q.number} options={group.type === 'tfng' ? TFNG : YNNG} />
             </QuestionShell>
@@ -213,7 +222,7 @@ function GroupBody({ group }: { group: QuestionGroup }) {
         <>
           {group.options && <OptionBank title="Options" options={group.options} />}
           {group.questions.map((q) => (
-            <QuestionShell key={q.number} n={q.number}>
+            <QuestionShell key={q.number} n={q.number} evidence={q.evidence}>
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="flex-1 min-w-0">{q.text}</span>
                 <Dropdown n={q.number} options={group.options ?? []} />
@@ -228,7 +237,7 @@ function GroupBody({ group }: { group: QuestionGroup }) {
         <>
           {group.options && <OptionBank title="List of Headings" options={group.options} />}
           {group.questions.map((q) => (
-            <QuestionShell key={q.number} n={q.number}>
+            <QuestionShell key={q.number} n={q.number} evidence={q.evidence}>
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="flex-1 min-w-0">{q.text}</span>
                 <Dropdown n={q.number} options={group.options ?? []} />
@@ -246,7 +255,7 @@ function GroupBody({ group }: { group: QuestionGroup }) {
           )}
           {group.options && <OptionBank title="Options" options={group.options} />}
           {group.questions.map((q) => (
-            <QuestionShell key={q.number} n={q.number}>
+            <QuestionShell key={q.number} n={q.number} evidence={q.evidence}>
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="flex-1 min-w-0">{q.text}</span>
                 <Dropdown n={q.number} options={group.options ?? []} />
@@ -259,7 +268,7 @@ function GroupBody({ group }: { group: QuestionGroup }) {
     case 'inline-gap':
       return (
         <div className="ielts-inline-gap">
-          {group.bodyHtml && <InlineGapBody html={group.bodyHtml} />}
+          {group.bodyHtml && <InlineGapBody group={group} />}
         </div>
       )
 
@@ -267,7 +276,7 @@ function GroupBody({ group }: { group: QuestionGroup }) {
       return (
         <>
           {group.questions.map((q) => (
-            <QuestionShell key={q.number} n={q.number}>
+            <QuestionShell key={q.number} n={q.number} evidence={q.evidence}>
               <StemWithBlank text={q.text ?? ''} n={q.number} />
             </QuestionShell>
           ))}
@@ -278,7 +287,7 @@ function GroupBody({ group }: { group: QuestionGroup }) {
       return (
         <>
           {group.questions.map((q) => (
-            <QuestionShell key={q.number} n={q.number}>
+            <QuestionShell key={q.number} n={q.number} evidence={q.evidence}>
               <div className="mb-1">{q.text}</div>
               <GapInput n={q.number} width="12rem" />
             </QuestionShell>

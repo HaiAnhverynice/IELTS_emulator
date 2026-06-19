@@ -1,15 +1,19 @@
 import type { ReactNode } from 'react'
 import { useStore } from '../../store'
 import { useReview } from '../../lib/hooks'
+import { EvidenceButton } from './inputs'
 
 /** Wraps a single discrete question: scroll anchor (#q{n}), its number, the
  *  body, and the "Review" flag checkbox shown in the real test. */
 export default function QuestionShell({
   n,
   children,
+  evidence,
 }: {
   n: number
   children: ReactNode
+  /** When set and in review mode, shows a "Show in passage" affordance. */
+  evidence?: string
 }) {
   const flagged = useStore((s) => !!s.flags[n])
   const current = useStore((s) => s.currentQuestion === n)
@@ -30,7 +34,14 @@ export default function QuestionShell({
         >
           {n}
         </span>
-        <div className="flex-1 min-w-0">{children}</div>
+        <div className="flex-1 min-w-0">
+          {children}
+          {review.reviewMode && evidence && (
+            <div className="mt-1">
+              <EvidenceButton n={n} />
+            </div>
+          )}
+        </div>
         {review.reviewMode ? (
           <span className={`shrink-0 text-lg font-bold ${ok ? 'rev-tick' : 'rev-cross'}`} aria-label={ok ? 'Correct' : 'Incorrect'}>
             {ok ? '✓' : '✗'}

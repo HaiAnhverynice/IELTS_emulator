@@ -140,6 +140,10 @@ export interface Question {
   options?: Option[]
   /** For mcq-multi: how many to choose. */
   maxSelect?: number
+  /** Reading only: the exact sentence/phrase in the passage that justifies the
+   *  answer. Shown in review mode — clicking the question scrolls to it and
+   *  highlights it. Must match the passage plain text verbatim. */
+  evidence?: string
 }
 
 /** Accepted answer(s) per question number. Marking is case-insensitive and
