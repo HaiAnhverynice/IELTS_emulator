@@ -17,6 +17,8 @@ export interface IeltsTest {
   category: TestCategory
   /** Optional source/attribution note shown on the home screen. */
   source?: string
+  /** Flags older tests with short, condensed passages (vs full ~700-word ones). */
+  simplified?: boolean
   listening?: ListeningModule
   reading?: ReadingModule
   writing?: WritingModule

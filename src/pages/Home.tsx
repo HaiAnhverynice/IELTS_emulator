@@ -34,7 +34,17 @@ function TestCard({ test, module, onRemove }: { test: IeltsTest; module: ModuleT
       <div className="flex items-start justify-between gap-2">
         <div>
           <h3 className="font-bold text-lg">{test.title}</h3>
-          <span className="text-xs uppercase tracking-wide opacity-60">{test.category}</span>
+          <div className="flex items-center gap-2">
+            <span className="text-xs uppercase tracking-wide opacity-60">{test.category}</span>
+            {test.simplified && (
+              <span
+                className="text-[10px] uppercase tracking-wide font-semibold px-1.5 py-0.5 border"
+                style={{ borderColor: 'var(--ielts-border)', opacity: 0.7 }}
+              >
+                Simplified
+              </span>
+            )}
+          </div>
         </div>
         {onRemove && (
           <button className="text-xs underline opacity-60 hover:opacity-100" onClick={onRemove}>
