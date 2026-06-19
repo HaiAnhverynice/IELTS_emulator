@@ -9,6 +9,7 @@ import { practiceReading7 } from './tests/practiceReading7'
 import { practiceReading8 } from './tests/practiceReading8'
 import { practiceReading9 } from './tests/practiceReading9'
 import { practiceReading10 } from './tests/practiceReading10'
+import { practiceReading11 } from './tests/practiceReading11'
 
 /** Tests bundled with the app. Add more files here as you author them. */
 export const builtInTests: IeltsTest[] = [
@@ -22,6 +23,7 @@ export const builtInTests: IeltsTest[] = [
   practiceReading8,
   practiceReading9,
   practiceReading10,
+  practiceReading11,
 ]
 
 // Pre-generated narration lives in public/audio as `<id>-part<n>.mp3`. Point
