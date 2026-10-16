@@ -18,6 +18,8 @@ import { practiceReading16 } from './tests/practiceReading16'
 import { practiceReading17 } from './tests/practiceReading17'
 import { practiceReading18 } from './tests/practiceReading18'
 import { practiceReading19 } from './tests/practiceReading19'
+import { practiceReading20 } from './tests/practiceReading20'
+import { practiceReading21 } from './tests/practiceReading21'
 
 /** Tests bundled with the app. Add more files here as you author them. */
 export const builtInTests: IeltsTest[] = [
@@ -40,6 +42,8 @@ export const builtInTests: IeltsTest[] = [
   practiceReading17,
   practiceReading18,
   practiceReading19,
+  practiceReading20,
+  practiceReading21,
 ]
 
 // The first 10 bundled tests use short, condensed passages. Newer tests
