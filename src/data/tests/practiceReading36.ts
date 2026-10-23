@@ -1,6 +1,6 @@
 import type { IeltsTest, Option } from '../../types'
 
-// Original reading practice test 29 (Academic, harder / full-length). CC0. Not affiliated with Cambridge/IELTS.
+// Original reading practice test 36 (Academic, harder / full-length). CC0. Not affiliated with Cambridge/IELTS.
 
 const cleaningMethods: Option[] = [
   { value: 'A', label: 'soap and water' },
@@ -32,9 +32,9 @@ const notesEndings: Option[] = [
   { value: 'H', label: 'should be required of all students.' },
 ]
 
-export const practiceReading29: IeltsTest = {
-  id: 'practice-reading-29',
-  title: 'Practice Test 29 — Reading (Academic, full-length)',
+export const practiceReading36: IeltsTest = {
+  id: 'practice-reading-36',
+  title: 'Practice Test 36 — Reading (Academic, full-length)',
   category: 'academic',
   source: 'Original CC0 material created for this simulator. Not affiliated with Cambridge/IELTS.',
 

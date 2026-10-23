@@ -1,6 +1,6 @@
 import type { IeltsTest, Option } from '../../types'
 
-// Original reading practice test 29 (Academic, harder / full-length). CC0. Not affiliated with Cambridge/IELTS.
+// Original reading practice test 42 (Academic, harder / full-length). CC0. Not affiliated with Cambridge/IELTS.
 
 const subscriptionHeadings: Option[] = [
   { value: 'i', label: 'Obstacles placed in the way of leaving' },
@@ -25,9 +25,9 @@ const navEndings: Option[] = [
   { value: 'H', label: 'slow down as they approach the Earth.' },
 ]
 
-export const practiceReading29: IeltsTest = {
-  id: 'practice-reading-29',
-  title: 'Practice Test 29 — Reading (Academic, full-length)',
+export const practiceReading42: IeltsTest = {
+  id: 'practice-reading-42',
+  title: 'Practice Test 42 — Reading (Academic, full-length)',
   category: 'academic',
   source: 'Original CC0 material created for this simulator. Not affiliated with Cambridge/IELTS.',
 

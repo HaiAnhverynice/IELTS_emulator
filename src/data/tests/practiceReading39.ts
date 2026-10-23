@@ -1,6 +1,6 @@
 import type { IeltsTest, Option } from '../../types'
 
-// Original reading practice test 28 (Academic, harder / full-length). CC0. Not affiliated with Cambridge/IELTS.
+// Original reading practice test 39 (Academic, harder / full-length). CC0. Not affiliated with Cambridge/IELTS.
 
 const caffeineHeadings: Option[] = [
   { value: 'i', label: 'A substance that hides tiredness rather than curing it' },
@@ -25,9 +25,9 @@ const backupParagraphs: Option[] = [
   { value: 'G', label: 'Paragraph G' },
 ]
 
-export const practiceReading28: IeltsTest = {
-  id: 'practice-reading-28',
-  title: 'Practice Test 28 — Reading (Academic, full-length)',
+export const practiceReading39: IeltsTest = {
+  id: 'practice-reading-39',
+  title: 'Practice Test 39 — Reading (Academic, full-length)',
   category: 'academic',
   source: 'Original CC0 material created for this simulator. Not affiliated with Cambridge/IELTS.',
 

@@ -1,6 +1,6 @@
 import type { IeltsTest, Option } from '../../types'
 
-// Original reading practice test 29 (Academic, harder / full-length). CC0. Not affiliated with Cambridge/IELTS.
+// Original reading practice test 40 (Academic, harder / full-length). CC0. Not affiliated with Cambridge/IELTS.
 
 const compostHeadings: Option[] = [
   { value: 'i', label: 'Why the rubbish bin is the wrong destination' },
@@ -34,9 +34,9 @@ const insuranceTerms: Option[] = [
   { value: 'F', label: 'self-insurance' },
 ]
 
-export const practiceReading29: IeltsTest = {
-  id: 'practice-reading-29',
-  title: 'Practice Test 29 — Reading (Academic, full-length)',
+export const practiceReading40: IeltsTest = {
+  id: 'practice-reading-40',
+  title: 'Practice Test 40 — Reading (Academic, full-length)',
   category: 'academic',
   source: 'Original CC0 material created for this simulator. Not affiliated with Cambridge/IELTS.',
 

@@ -1,6 +1,6 @@
 import type { IeltsTest, Option } from '../../types'
 
-// Original reading practice test 28 (Academic, harder / full-length). CC0. Not affiliated with Cambridge/IELTS.
+// Original reading practice test 35 (Academic, harder / full-length). CC0. Not affiliated with Cambridge/IELTS.
 
 const caffeineHeadings: Option[] = [
   { value: 'i', label: 'Official figures and their limitations' },
@@ -28,9 +28,9 @@ const subscriptionEndings: Option[] = [
 
 const gpsParagraphs: Option[] = ['A', 'B', 'C', 'D', 'E', 'F', 'G'].map((l) => ({ value: l, label: `Paragraph ${l}` }))
 
-export const practiceReading28: IeltsTest = {
-  id: 'practice-reading-28',
-  title: 'Practice Test 28 — Reading (Academic, full-length)',
+export const practiceReading35: IeltsTest = {
+  id: 'practice-reading-35',
+  title: 'Practice Test 35 — Reading (Academic, full-length)',
   category: 'academic',
   source: 'Original CC0 material created for this simulator. Not affiliated with Cambridge/IELTS.',
 
